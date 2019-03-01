@@ -1,0 +1,36 @@
+div.row {
+	padding: 1rem;
+	border-top: 1px ghostwhite solid;
+	display: grid;
+	justify-items: center;
+	align-items: center;
+	grid-template: 1fr / 1fr 1fr 5fr 1fr 1fr;
+
+
+}
+
+
+
+div.table {
+	margin: 0rem;
+	width: auto;
+	overflow: auto;
+	max-height: 70vh;
+	grid-template: 1fr / 1fr;
+	grid-auto-flow: row;
+	display: grid;
+
+}
+::-webkit-scrollbar {
+	background-color: black;
+	width: .3em
+}
+
+::-webkit-scrollbar-thumb:window-inactive,
+::-webkit-scrollbar-thumb {
+	background:  white;
+}
+
+p.address {
+	align-self: start;
+}

@@ -1,0 +1,13 @@
+div#componentMenu {
+
+	align-self: center;
+	margin: 3rem;
+}
+
+div#componentMenu div {
+}
+
+span.p-menuitem-text, a.p-menuitem-lin  {
+	text-align: left;
+}
+
