@@ -109,14 +109,8 @@ class FuelFinder extends Component {
 		super(props);
 		this.state = {
 			url: "http://elyspio.fr:4000/now",
-			settings: {
-				fuel: FuelFinder.settings.fuels.gazole,
-				order: FuelFinder.settings.order.asc,
-				cp: this.props.fuelSetting.cp
-			},
 			pdv: [],
 			allPdv: [],
-			params: {format: this.props.fuelSetting.format}
 		}
 
 		this.onlyOneFetcher(this.update);
@@ -355,9 +349,6 @@ class Pvd {
 
 	}
 
-
-
-
 };
 
 
@@ -389,7 +380,6 @@ class PdvComp extends React.Component {
 
 	render() {
 
-		const price = this.state.price
 
 
 		return (
