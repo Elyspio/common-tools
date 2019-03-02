@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {xml2js} from 'xml-js'
 import '../assets/css/FuelFinder.css'
 import {Action} from "../redux/Action";
+import Axios from 'axios'
+import {ProgressBar} from "@blueprintjs/core";
 
 function mapStateToProps(state) {
 	return {
@@ -48,8 +49,6 @@ function mapDispatchToProps(dispatch) {
 
 	}
 }
-
-
 
 
 class FuelFinder extends Component {
@@ -100,7 +99,7 @@ class FuelFinder extends Component {
 			price: "price",
 			cp: "cp",
 			brand: "brand",
-			dist : "distance"
+			dist: "distance"
 		}
 	};
 
@@ -108,9 +107,10 @@ class FuelFinder extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			url: "http://elyspio.fr:4000/now",
+			url: "http://elyspio.fr:4000/year/2017",
 			pdv: [],
 			allPdv: [],
+			fetchProgress : 0
 		}
 
 		this.onlyOneFetcher(this.update);
@@ -118,7 +118,9 @@ class FuelFinder extends Component {
 	}
 
 	componentWillReceiveProps(nextProps, nextContext) {
-		this.update();
+		console.log("NEW PROPS", nextProps)
+
+		this.update(nextProps);
 
 	}
 
@@ -137,31 +139,33 @@ class FuelFinder extends Component {
 					},
 
 				}
-			}, this.fetchData
+			}, () => this.onlyOneFetcher(this.update)
 		);
 
 
 	}
 
 	onlyOneFetcher = (callback) => {
-		fetch(this.urlWithParams(), {method: "GET"}).then(res => {
-				if (this.props.fuelSetting.format === FuelFinder.settings.format.json) {
-					res.json().then(json => {
-							console.log(json);
-							this.setState(prev => ({
-								...prev,
-								allPdv: json['pdv_liste']['pdv']
-							}), callback)
-						}
-					)
-				} else if (this.props.fuelSetting.format === FuelFinder.settings.format.xml) {
-					console.log("Coucou xml")
-					res.text().then(xml => {
-						console.log(xml);
-					})
-				}
+
+		Axios.get(this.urlWithParams(), {
+			onDownloadProgress: (p) => {
+
+				this.setState({
+					fetchProgress : p.loaded / p.total
+				})
+			},
+			responseType: 'json'
+		}).then(data => {
+			if (this.props.fuelSetting.format === FuelFinder.settings.format.json) {
+				const json = data['data'];
+				console.log(json);
+				this.setState(prev => ({
+					...prev,
+					allPdv: json['pdv_liste']['pdv']
+				}), callback)
 			}
-		)
+		})
+
 	};
 
 
@@ -216,27 +220,22 @@ class FuelFinder extends Component {
 	}
 
 
-	update = () => {
+	update = (props = this.props) => {
 		const searchedPdv = [];
 
-		// Check pdv's which start by the good pc (postal code)
 		console.log("TAILLE", this.state.allPdv.length);
 
 
-		const cpPdv = this.state.allPdv.filter(pvd => pvd['_attributes']['cp'].startsWith(this.props.fuelSetting.cp.toString().slice(0, 2)) && pvd['prix'] !== undefined);
+		const cpPdv = this.state.allPdv.filter(pvd => pvd['_attributes']['cp'].startsWith(props.fuelSetting.cp.toString().slice(0, 2)) && pvd['prix'] !== undefined);
 
 		console.log("TAILLE CP", cpPdv.length);
 
 
-
 		cpPdv.forEach(pdv => {
-			const pdvToAdd = new Pvd({
-				cp: pdv['_attributes']['cp'],
-				address: pdv['adresse']['_text']
-			});
+
 			if (pdv['prix'].length !== undefined) {
 				pdv['prix'].forEach(p => {
-					if (p['_attributes']['id'].toString() === this.props.fuelSetting.fuel.id.toString()) {
+					if (p['_attributes']['id'].toString() === props.fuelSetting.fuel.id.toString()) {
 						// searchedPdv.push(<Row pdv={pvd} fuelId={this.state.settings.fuel.id}/>)
 
 
@@ -248,7 +247,7 @@ class FuelFinder extends Component {
 					}
 				});
 			} else {
-				if (pdv['_attributes']['id'].toString() === this.props.fuelSetting.fuel.id.toString()) {
+				if (pdv['_attributes']['id'].toString() === props.fuelSetting.fuel.id.toString()) {
 					searchedPdv.push(new Pvd({
 						cp: pdv['_attributes']['cp'],
 						price: pdv['prix']['_attributes']['valeur'],
@@ -269,7 +268,8 @@ class FuelFinder extends Component {
 		const btns = [];
 
 		Object.keys(FuelFinder.settings.fuels).forEach(f => {
-			btns.push(<button onClick={() => this.props.changeFuel(FuelFinder.settings.fuels[f])}>{FuelFinder.settings.fuels[f].nom}</button>)
+			btns.push(<button
+				onClick={() => this.props.changeFuel(FuelFinder.settings.fuels[f])}>{FuelFinder.settings.fuels[f].nom}</button>)
 		});
 
 		return (
@@ -280,48 +280,81 @@ class FuelFinder extends Component {
 
 	};
 
+	renderTitles = () => {
+		return (
+			<div className={"row header"}>
+				<p className={"brand"}>Marque</p>
+				<p className={"cp"}>CP</p>
+				<p className={"address"}>Adresse</p>
+				<p className={"price"}>Prix</p>
+				<p className={"dist"}>Distance</p>
+			</div>
+		)
+	};
+
 
 	render() {
 
 
 		console.log("A", this.state.pdv);
-		return (
-			<div id={"fuelFinder"}>
-				<h1>FUEL !</h1>
-				<button onClick={() => this.setFormat(FuelFinder.settings.format.json)}>Fetch JSON</button>
-				<button onClick={() => this.setFormat(FuelFinder.settings.format.xml)}>Fetch XML</button>
-				{this.renderBtns()}
-				<div className={""}>
-					<div className={"row header"}>
-						<p className={"brand"}>Marque</p>
-						<p className={"cp"}>CP</p>
-						<p className={"address"}>Adresse</p>
-						<p className={"price"}>Prix</p>
-						<p className={"dist"}>Distance</p>
-					</div>
 
-					<div className="table">
-						{this.state.pdv.map(pdv => <PdvComp key={PdvComp.nbComp++} address={pdv.address}
-						                                    brand={pdv.brand} cp={pdv.cp}
-						                                    dist={pdv.dist} price={pdv.price}/>)}
+		if(this.state.pdv.length !== [].length)
+		{
+			return (
+				<div id={"fuelFinder"}>
+					<h1>FUEL !</h1>
+
+					<button onClick={() => this.setFormat(FuelFinder.settings.format.json)}>Fetch JSON</button>
+					<button onClick={() => this.setFormat(FuelFinder.settings.format.xml)}>Fetch XML</button>
+					{this.renderBtns()}
+
+					<div className={""}>
+
+						{this.renderTitles()}
+
+						<div className="table">
+							{this.state.pdv.map(pdv => <PdvComp key={PdvComp.nbComp++} address={pdv.address}
+							                                    brand={pdv.brand} cp={pdv.cp}
+							                                    dist={pdv.dist} price={pdv.price}/>)}
+						</div>
+
 					</div>
 
 				</div>
+			);
+		}
+		else {
+			return (
+				<div id={"fuelFinder"}>
+					<h1>FUEL !</h1>
+					<div className="progress">
+						<h2>Téléchargement : </h2>
+						<ProgressBar className={"progressBar"} intent={"danger"} value={this.state.fetchProgress} animate={true}/>
+					</div>
 
 
-			</div>
-		);
+				</div>
+			);
+		}
+
+
+
 	}
 
 
 	urlWithParams = () => {
 		let url = this.state.url;
-		const keys = Object.keys(this.state.params);
+
+		let obj = {
+			format: this.props.fuelSetting.format
+		}
+
+		const keys = Object.keys(obj);
 		for (let i = 0; i < keys.length; i++) {
 			if (i === 0) {
 				url += '?'
 			}
-			url += `${keys[i]}=${this.state.params[keys[i]]}`;
+			url += `${keys[i]}=${obj[keys[i]]}`;
 			if (i < keys.length - 1)
 				url += '&'
 		}
@@ -381,7 +414,6 @@ class PdvComp extends React.Component {
 	render() {
 
 
-
 		return (
 			<div className="row">
 				<p className={"brand"}>{this.state.brand}</p>
@@ -397,9 +429,7 @@ class PdvComp extends React.Component {
 }
 
 
-export default connect(
-	mapStateToProps, mapDispatchToProps
-)(FuelFinder);
+export default connect(mapStateToProps, mapDispatchToProps)(FuelFinder);
 
 export {
 	FuelFinder

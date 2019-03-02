@@ -29,7 +29,8 @@ module.exports = {
         use: [{ loader: 'file-loader?name=font/[name]__[hash:base64:5].[ext]' }],
         include: defaultInclude
       }
-    ]
+    ],
+
   },
   target: 'electron-renderer',
   plugins: [

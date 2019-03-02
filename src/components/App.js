@@ -8,9 +8,11 @@ import StartServers from "./StartServers";
 import '../assets/css/App.css'
 import "../assets/css/blueprint.css"
 
-import "../assets/resources/primereact.min.css";
-import "../assets/resources/primeicons.css";
-import "../assets/resources/themes/nova-light/theme.css";
+
+import '../assets/import/theme.css'
+import '../assets/import/primereact.min.css'
+import '../assets/import/primeicons.css'
+
 import FuelFinder from "./FuelFinder";
 
 

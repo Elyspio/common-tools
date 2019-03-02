@@ -34,3 +34,16 @@ div.table {
 p.address {
 	align-self: start;
 }
+
+div.progress {
+	display: grid;
+	grid-template: 1fr / 15rem 3fr;
+	align-items: center;
+	margin: 1rem 4rem
+}
+
+
+/*Progress bar color*/
+div.bp3-progress-bar.bp3-intent-danger.progressBar div.bp3-progress-meter {
+	background-color: #ef1a00;
+}
