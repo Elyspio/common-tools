@@ -2,13 +2,14 @@ div.row {
 	padding: 1rem;
 	border-top: 1px ghostwhite solid;
 	display: grid;
+	grid-gap: 1rem;
+
 	justify-items: center;
 	align-items: center;
-	grid-template: 1fr / 1fr 1fr 5fr 1fr 1fr;
+	grid-template: 1fr / 1fr 5fr 1fr 1fr 1fr;
 
 
 }
-
 
 
 div.table {
@@ -21,6 +22,7 @@ div.table {
 	display: grid;
 
 }
+
 ::-webkit-scrollbar {
 	background-color: black;
 	width: .3em
@@ -28,11 +30,19 @@ div.table {
 
 ::-webkit-scrollbar-thumb:window-inactive,
 ::-webkit-scrollbar-thumb {
-	background:  white;
+	background: white;
+}
+
+div.header p.address {
+	justify-self: center;
 }
 
 p.address {
-	align-self: start;
+	justify-self: left;
+}
+
+p {
+	margin: 0;
 }
 
 div.progress {

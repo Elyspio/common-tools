@@ -107,7 +107,8 @@ class FuelFinder extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			url: "http://elyspio.fr:4000/year/2017",
+			url: "http://elyspio.fr:4000/day" +
+				"",
 			pdv: [],
 			allPdv: [],
 			fetchProgress : 0
@@ -284,8 +285,8 @@ class FuelFinder extends Component {
 		return (
 			<div className={"row header"}>
 				<p className={"brand"}>Marque</p>
-				<p className={"cp"}>CP</p>
 				<p className={"address"}>Adresse</p>
+				<p className={"cp"}>CP</p>
 				<p className={"price"}>Prix</p>
 				<p className={"dist"}>Distance</p>
 			</div>
@@ -417,8 +418,8 @@ class PdvComp extends React.Component {
 		return (
 			<div className="row">
 				<p className={"brand"}>{this.state.brand}</p>
-				<p className={"cp"}>{this.state.cp}</p>
 				<p className={"address"}>{this.state.address}</p>
+				<p className={"cp"}>{this.state.cp}</p>
 				<p className={"price"}>{this.state.price}</p>
 				<p className={"dist"}>{this.state.dist}</p>
 			</div>

@@ -8,7 +8,7 @@ const DEFAULT_STATE = {
 	FUEL: {
 		fuel: FuelFinder.settings.fuels.gazole,
 		sortBy: FuelFinder.settings.sortBy.price,
-		order: FuelFinder.settings.order.dsc,
+		order: FuelFinder.settings.order.asc,
 		format: FuelFinder.settings.format.json,
 		cp: "69300"
 	},
