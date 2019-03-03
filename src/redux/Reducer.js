@@ -1,5 +1,5 @@
 import {Action} from './Action';
-import {FuelFinder} from "../components/FuelFinder";
+import {FuelFinder} from "../components/FuelFinder/FuelFinder";
 
 const DEFAULT_STATE = {
 	COMPONENT: {

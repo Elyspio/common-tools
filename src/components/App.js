@@ -13,7 +13,7 @@ import '../assets/import/theme.css'
 import '../assets/import/primereact.min.css'
 import '../assets/import/primeicons.css'
 
-import FuelFinder from "./FuelFinder";
+import FuelFinder from "./FuelFinder/FuelFinder";
 
 
 // nova dark stheme

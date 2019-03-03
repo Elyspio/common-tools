@@ -8,12 +8,20 @@ div.row {
 	align-items: center;
 	grid-template: 1fr / 1fr 5fr 1fr 1fr 1fr;
 
-
 }
 
 
-div.table {
-	margin: 0rem;
+.p-menuitem-link {
+	background-color : grey;
+}
+
+.p-menuitem-link span {
+	color : white
+
+}
+
+div.data {
+	margin: 0;
 	width: auto;
 	overflow: auto;
 	max-height: 70vh;
@@ -37,6 +45,10 @@ div.header p.address {
 	justify-self: center;
 }
 
+div.header p, button.fuelButton {
+	font-size: 125%;
+}
+
 p.address {
 	justify-self: left;
 }
@@ -53,7 +65,22 @@ div.progress {
 }
 
 
+body .p-panelmenu .p-panelmenu-header.p-highlight > a, body .p-panelmenu .p-panelmenu-header.p-highlight > a:hover {
+	background-color: #be6000;
+	border: orange ;
+}
+
 /*Progress bar color*/
 div.bp3-progress-bar.bp3-intent-danger.progressBar div.bp3-progress-meter {
 	background-color: #ef1a00;
+}
+
+div.fuels {
+	display: grid;
+	grid-template: 1fr / repeat(6, 1fr);
+	grid-gap: 1rem;
+	margin: 1rem;
+	justify-items: center;
+	align-items: center;
+
 }
