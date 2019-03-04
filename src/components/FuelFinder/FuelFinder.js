@@ -6,6 +6,7 @@ import Axios from 'axios'
 import {ProgressBar} from "@blueprintjs/core";
 import {PdvComp, Pvd} from "./Pdv";
 import FuelButton from "./FuelButton";
+import FuelHeader from "./FuelHeader";
 
 function mapStateToProps(state) {
 	return {
@@ -40,12 +41,6 @@ function mapDispatchToProps(dispatch) {
 		},
 
 
-		reorder: (order) => {
-			dispatch({
-				type: Action.FUEL_FINDER.REORDER.TYPE,
-				payload: order,
-			})
-		},
 
 
 	}
@@ -100,7 +95,9 @@ class FuelFinder extends Component {
 			price: "price",
 			cp: "cp",
 			brand: "brand",
-			dist: "distance"
+			dist: "distance",
+			address : "address",
+			city : "city"
 		}
 	};
 
@@ -234,11 +231,13 @@ class FuelFinder extends Component {
 
 		cpPdv.forEach(pdv => {
 
+
 			if (pdv['prix'].length !== undefined) {
 				pdv['prix'].forEach(p => {
 					if (p['_attributes']['id'].toString() === props.fuelSetting.fuel.id.toString()) {
 						searchedPdv.push(new Pvd({
 							cp: pdv['_attributes']['cp'],
+							city : pdv['ville']['_text'],
 							price: p['_attributes']['valeur'],
 							address: pdv['adresse']['_text']
 						}))
@@ -249,6 +248,7 @@ class FuelFinder extends Component {
 					searchedPdv.push(new Pvd({
 						cp: pdv['_attributes']['cp'],
 						price: pdv['prix']['_attributes']['valeur'],
+						city : pdv['ville']['_text'],
 						address: pdv['adresse']['_text']
 					}))
 				}
@@ -271,8 +271,6 @@ class FuelFinder extends Component {
 
 				btn = <FuelButton fuel={fuel}/>;
 
-			// btns.push(<button
-			// 	onClick={() => this.props.changeFuel(FuelFinder.settings.fuels[f])}>{FuelFinder.settings.fuels[f].nom}</button>)
 			btns.push(btn);
 		});
 
@@ -284,14 +282,18 @@ class FuelFinder extends Component {
 
 	};
 
+
+
 	renderTitles = () => {
 		return (
 			<div className={"row header"}>
-				<p className={"brand"}>Marque</p>
-				<p className={"address"}>Adresse</p>
-				<p className={"cp"}>CP</p>
-				<p className={"price"}>Prix</p>
-				<p className={"dist"}>Distance</p>
+				<FuelHeader sorter={FuelFinder.settings.sortBy.brand}>Marque</FuelHeader>
+				<FuelHeader sorter={FuelFinder.settings.sortBy.city}>Ville</FuelHeader>
+				<FuelHeader sorter={FuelFinder.settings.sortBy.address}>Adresse</FuelHeader>
+				<FuelHeader sorter={FuelFinder.settings.sortBy.cp}>Code Postale</FuelHeader>
+				<FuelHeader sorter={FuelFinder.settings.sortBy.price}>Prix</FuelHeader>
+				<FuelHeader sorter={FuelFinder.settings.sortBy.dist}>Distance</FuelHeader>
+
 			</div>
 		)
 	};
@@ -318,7 +320,7 @@ class FuelFinder extends Component {
 						<div className="data">
 							{this.state.pdv.map(pdv => <PdvComp key={PdvComp.nbComp++} address={pdv.address}
 							                                    brand={pdv.brand} cp={pdv.cp}
-							                                    dist={pdv.dist} price={pdv.price}/>)}
+							                                    dist={pdv.dist} price={pdv.price} city={pdv.city}/>)}
 						</div>
 
 					</div>
@@ -363,6 +365,8 @@ class FuelFinder extends Component {
 		console.log(url);
 		return url;
 	}
+
+
 }
 
 

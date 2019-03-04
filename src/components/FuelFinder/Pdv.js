@@ -8,6 +8,7 @@ class Pvd {
 	price;
 	dist;
 	address;
+	city;
 
 	constructor(props) {
 
@@ -16,6 +17,7 @@ class Pvd {
 		this.price = props.price;
 		this.dist = 0;
 		this.address = props.address;
+		this.city = props.city
 
 	}
 
@@ -30,6 +32,7 @@ class PdvComp extends React.Component {
 		brand: PropTypes.string.isRequired,
 		cp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 		dist: PropTypes.number.isRequired,
+		city : PropTypes.string.isRequired,
 		price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 	}
 
@@ -41,6 +44,7 @@ class PdvComp extends React.Component {
 			address: props.address,
 			price: props.price,
 			dist: props.dist,
+			city : props.city
 
 		};
 
@@ -54,6 +58,7 @@ class PdvComp extends React.Component {
 		return (
 			<div className="row">
 				<p className={"brand"}>{this.state.brand}</p>
+				<p className={"city"}>{this.state.city}</p>
 				<p className={"address"}>{this.state.address}</p>
 				<p className={"cp"}>{this.state.cp}</p>
 				<p className={"price"}>{this.state.price}</p>

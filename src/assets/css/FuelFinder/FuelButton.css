@@ -23,7 +23,7 @@ div.fuels button.fuelButton:hover {
 }
 
 
-button.fuelButton:disabled {
+div.fuels button.fuelButton:disabled {
 	color : darkgrey;
 }
 

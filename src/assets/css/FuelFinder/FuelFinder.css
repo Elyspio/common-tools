@@ -2,21 +2,37 @@ div.row {
 	padding: 1rem;
 	border-top: 1px ghostwhite solid;
 	display: grid;
-	grid-gap: 1rem;
+	grid-gap: 0.51rem;
 
 	justify-items: center;
 	align-items: center;
-	grid-template: 1fr / 1fr 5fr 1fr 1fr 1fr;
+	grid-template: 1fr / 1fr 2fr 4fr 1fr 1fr 1fr;
 
+}
+
+header p.sorter {
+	font-weight: bold;
+}
+
+
+.p-menuitem-link:hover {
+	background-color: grey;
 }
 
 
 .p-menuitem-link {
-	background-color : grey;
+	background-color: #404040;
 }
 
+
+
 .p-menuitem-link span {
-	color : white
+	color: white
+
+}
+
+div.header p:hover {
+	color: orange;
 
 }
 
@@ -49,7 +65,7 @@ div.header p, button.fuelButton {
 	font-size: 125%;
 }
 
-p.address {
+p.address, p.city, p.brand {
 	justify-self: left;
 }
 
@@ -67,7 +83,7 @@ div.progress {
 
 body .p-panelmenu .p-panelmenu-header.p-highlight > a, body .p-panelmenu .p-panelmenu-header.p-highlight > a:hover {
 	background-color: #be6000;
-	border: orange ;
+	border: orange;
 }
 
 /*Progress bar color*/
@@ -78,7 +94,7 @@ div.bp3-progress-bar.bp3-intent-danger.progressBar div.bp3-progress-meter {
 div.fuels {
 	display: grid;
 	grid-template: 1fr / repeat(6, 1fr);
-	grid-gap: 1rem;
+	grid-gap: 0.5rem;
 	margin: 1rem;
 	justify-items: center;
 	align-items: center;

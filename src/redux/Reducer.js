@@ -35,9 +35,7 @@ const componentReducer = (state = DEFAULT_STATE.COMPONENT, action) => {
 };
 
 const fuelReducer = (state = DEFAULT_STATE.FUEL, action) => {
-
-	console.log("ECHO ! ", action.type, Action.FUEL_FINDER.CHANGE_FUEL);
-
+	console.log(action.type, Action.FUEL_FINDER.CHANGE_SORTER.TYPE, action.payload)
 	switch (action.type) {
 
 		case Action.FUEL_FINDER.CHANGE_FUEL.TYPE:
@@ -45,9 +43,6 @@ const fuelReducer = (state = DEFAULT_STATE.FUEL, action) => {
 				...state,
 				fuel: action.payload
 			};
-
-			console.log("Coucou reducer");
-
 			break;
 
 		case Action.FUEL_FINDER.CHANGE_CP.TYPE :
@@ -55,21 +50,30 @@ const fuelReducer = (state = DEFAULT_STATE.FUEL, action) => {
 				...state,
 				cp: action.payload
 			};
-			break
+			break;
 
 		case Action.FUEL_FINDER.CHANGE_FORMAT.TYPE :
 			state = {
 				...state,
 				format: action.payload
 			};
-			break
+			break;
 
 		case Action.FUEL_FINDER.REORDER.TYPE :
 			state = {
 				...state,
 				order: action.payload
 			};
-			break
+			break;
+
+
+		case Action.FUEL_FINDER.CHANGE_SORTER.TYPE :
+			console.log("CHANGE SORTER !!! ");
+			state = {
+				...state,
+				sortBy : action.payload
+			};
+			break;
 
 		default:
 			break;

@@ -2,11 +2,9 @@
 ##########################
 builds/
 .idea/
-.idea
 # Development folders and files #
 #################################
 .tmp/
-dist/
 node_modules/
 *.compiled.*
 

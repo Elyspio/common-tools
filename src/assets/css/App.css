@@ -5,8 +5,9 @@ div#App {
 	display: grid;
 	grid-template-areas: "menu component";
 	grid-template-columns: 2fr 8fr;
-	grid-gap: 1rem;
-	background: #000000;
+	grid-gap: 0.5rem;
+
+	background: #000000e8;
 }
 
 div#currentComponent {
