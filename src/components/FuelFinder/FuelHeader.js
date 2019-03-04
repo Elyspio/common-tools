@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Action} from "../../redux/Action";
 import {connect} from "react-redux";
 import {FuelFinder} from "./FuelFinder";
-
+import '../../assets/css/FuelFinder/FuelHeader.css'
 class FuelHeader extends Component {
 
 
@@ -15,7 +15,19 @@ class FuelHeader extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			isSorter: this.props.sorter === this.props.fuelSetting.sortBy
+			isSorter: this.props.sorter === this.props.fuelSetting.sortBy,
+			order : ""
+		}
+
+		if(this.props.sorter === this.props.fuelSetting.sortBy)
+		{
+			if(this.props.fuelSetting.order === FuelFinder.settings.order.asc)
+				this.state.order = "asc"
+
+			if(this.props.fuelSetting.order === FuelFinder.settings.order.dsc)
+				this.state.order = "dsc"
+
+
 		}
 
 
@@ -35,7 +47,7 @@ class FuelHeader extends Component {
 	};
 
 	componentWillReceiveProps(nextProps, nextContext) {
-		if (this.props.fuelSetting.sortBy !== nextProps.fuelSetting.sortBy) {
+		if (this.props.fuelSetting.sortBy !== nextProps.fuelSetting.sortBy ||this.props.fuelSetting.order === nextProps.fuelSetting.order) {
 			this.setState(prev => ({
 				...prev,
 				isSorter: this.props.sorter === nextProps.fuelSetting.sortBy
@@ -46,7 +58,7 @@ class FuelHeader extends Component {
 	render() {
 		return (
 			<p onClick={() => this.changeSortOrField(this.props.sorter)}
-			   className={this.props.className + ` ${this.state.isSorter ? "sorter" : ""}`}>{this.props.children}</p>
+			   className={this.props.className + ` ${this.state.isSorter ? "sorter" : ""} ${this.state.order}`}>{this.props.children}</p>
 
 		);
 	}

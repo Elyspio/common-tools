@@ -287,12 +287,12 @@ class FuelFinder extends Component {
 	renderTitles = () => {
 		return (
 			<div className={"row header"}>
-				<FuelHeader sorter={FuelFinder.settings.sortBy.brand}>Marque</FuelHeader>
-				<FuelHeader sorter={FuelFinder.settings.sortBy.city}>Ville</FuelHeader>
-				<FuelHeader sorter={FuelFinder.settings.sortBy.address}>Adresse</FuelHeader>
-				<FuelHeader sorter={FuelFinder.settings.sortBy.cp}>Code Postale</FuelHeader>
-				<FuelHeader sorter={FuelFinder.settings.sortBy.price}>Prix</FuelHeader>
-				<FuelHeader sorter={FuelFinder.settings.sortBy.dist}>Distance</FuelHeader>
+				<FuelHeader className={"brand"} sorter={FuelFinder.settings.sortBy.brand}>Marque</FuelHeader>
+				<FuelHeader className={"city"} sorter={FuelFinder.settings.sortBy.city}>Ville</FuelHeader>
+				<FuelHeader className={"address"} sorter={FuelFinder.settings.sortBy.address}>Adresse</FuelHeader>
+				<FuelHeader className={"cp"} sorter={FuelFinder.settings.sortBy.cp}>Code Postale</FuelHeader>
+				<FuelHeader className={"price"} sorter={FuelFinder.settings.sortBy.price}>Prix</FuelHeader>
+				<FuelHeader className={"dist"} sorter={FuelFinder.settings.sortBy.dist}>Distance</FuelHeader>
 
 			</div>
 		)
