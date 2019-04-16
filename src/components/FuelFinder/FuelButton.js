@@ -21,8 +21,6 @@ class FuelButton extends React.Component {
 
 	update = (newProps) => {
 
-		console.log(newProps.fuel, this.props.fuel);
-
 		this.setState({
 			disabled: newProps.fuelSetting.fuel === this.props.fuel
 		})
@@ -30,8 +28,6 @@ class FuelButton extends React.Component {
 
 
 	componentWillReceiveProps = (nextProps, nextContext) => {
-
-		console.log(nextProps, this.props);
 
 		if (nextProps.fuelSetting !== this.props.fuelSetting)
 			this.update(nextProps);
@@ -54,7 +50,6 @@ function mapDispatchToProps(dispatch) {
 	return {
 		changeFuel: (fuel) => {
 
-			console.log("baka", fuel);
 
 			dispatch({
 				type: Action.FUEL_FINDER.CHANGE_FUEL.TYPE,
@@ -67,7 +62,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-	console.log(state);
 	return {
 		fuelSetting: state.fuelSetting
 	}

@@ -1,30 +1,13 @@
 import PropTypes from 'prop-types'
 import React from "react";
-import {Classes, Menu} from "@blueprintjs/core";
 import {connect} from "react-redux";
-import {Action} from "../redux/Action";
-import {PanelMenu} from "primereact/panelmenu";
+import {Action} from "../actions";
+import {PanelMenu} from "primereact/panelmenu.js";
 import "../assets/css/ComponentMenu.css"
 
 class ComponentMenu extends React.Component {
 	render() {
 		let menu;
-
-		if (this.props.mode === "blueprint") {
-			menu =
-				<Menu className={Classes.ELEVATION_1}>
-					<Menu.Item text={"Animes"}>
-						<Menu.Item text={"Renamer"}
-						           onClick={() => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.RENAME)}/>
-					</Menu.Item>
-
-					<Menu.Item text={"Web"}>
-						<Menu.Item text={"Start Servers"}
-						           onClick={() => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.DEV.START_SERVERS)}/>
-					</Menu.Item>
-
-				</Menu>;
-		}
 
 		if (this.props.mode === "primereact") {
 
@@ -39,6 +22,10 @@ class ComponentMenu extends React.Component {
 						{
 							label : "Fuel worker",
 							command : () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.FUEL_WORKER)
+						},
+						{
+							label : "Stop apps",
+							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS)
 						}
 					]
 				},
