@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {Action} from "../../redux/Action";
 import {connect} from "react-redux";
-import '../../assets/css/FuelFinder/FuelButton.css'
+import './FuelButton.css'
 
 class FuelButton extends React.Component {
 

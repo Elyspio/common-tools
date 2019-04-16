@@ -1,19 +1,24 @@
 import React from 'react'
 import {connect} from "react-redux";
-import {Action} from "../redux/Action";
-import ComponentMenu from "./ComponentMenu";
-import Rename from "./Rename";
-import StartServers from "./StartServers";
+import {Action} from "../../redux/Action";
 
-import '../assets/css/App.css'
-import "../assets/css/blueprint.css"
+import './App.css'
+
+// import "../assets/css/blueprint.css"
 
 
-import '../assets/import/theme.css'
-import '../assets/import/primereact.min.css'
-import '../assets/import/primeicons.css'
+// import '../assets/import/theme.css'
 
-import FuelFinder from "./FuelFinder/FuelFinder";
+import "primereact/resources/themes/nova-dark/theme.css"
+import "primereact/resources/primereact.min.css"
+import "primeicons/primeicons.css"
+
+import FuelFinder from "../FuelFinder/FuelFinder";
+import StopApps from "../StopApps/StopApps";
+import StartServers from "../StartServer/StartServers";
+import Menu from "../Menu/Menu";
+import Rename from "../Rename/Rename";
+
 
 
 // nova dark stheme
@@ -29,14 +34,16 @@ class App extends React.Component {
 				break;
 
 			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.FUEL_WORKER:
-				comp = <FuelFinder/>
+				comp = <FuelFinder/>;
 				break;
 
 			case Action.CHANGE_COMPONENT.PAYLOAD.DEV.START_SERVERS:
 				comp = <StartServers/>;
 				break;
 
-
+			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS:
+				comp = <StopApps/>;
+				break;
 			default:
 				break;
 		}
@@ -44,7 +51,7 @@ class App extends React.Component {
 		return (
 			<div id={"App"}>
 				<div id="menu" className={"components"}>
-					<ComponentMenu mode={"primereact"} />
+					<Menu mode={"primereact"} />
 
 				</div>
 

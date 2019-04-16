@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import '../../assets/css/FuelFinder/FuelFinder.css'
-import {Action} from "../../actions";
+import './FuelFinder.css'
+import {Action} from "../../redux/Action";
 import Axios from 'axios'
 import {PdvComp, Pvd} from "./Pdv";
 import FuelButton from "./FuelButton";
 import FuelHeader from "./FuelHeader";
-import CpModal from './CpModal'
 
 function mapStateToProps(state) {
 	return {
@@ -336,8 +335,8 @@ class FuelFinder extends Component {
 					<h1>FUEL !</h1>
 					<div id={"cpChange"}>
 						<p>Recherche : </p>
-						<Popover content={<CpModal changeCp={this.props.changeCp}/>}
-						         target={<Button intent={"secondary"} text={this.props.fuelSetting.cp}/>}/>
+						{/*<Popover content={<CpModal changeCp={this.props.changeCp}/>}*/}
+						{/*         target={<Button intent={"secondary"} text={this.props.fuelSetting.cp}/>}/>*/}
 
 					</div>
 
@@ -367,8 +366,8 @@ class FuelFinder extends Component {
 					<h1>FUEL !</h1>
 					<div className="progress">
 						<h2>Téléchargement : </h2>
-						<ProgressBar className={"progressBar"} intent={"danger"} value={this.state.fetchProgress}
-						             animate={true}/>
+						{/*<ProgressBar className={"progressBar"} intent={"danger"} value={this.state.fetchProgress}*/}
+						{/*             animate={true}/>*/}
 					</div>
 
 

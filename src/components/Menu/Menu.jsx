@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import React from "react";
 import {connect} from "react-redux";
-import {Action} from "../actions";
+import {Action} from "../../redux/Action";
 import {PanelMenu} from "primereact/panelmenu.js";
-import "../assets/css/ComponentMenu.css"
+import "./Menu.css"
 
-class ComponentMenu extends React.Component {
+class Menu extends React.Component {
 	render() {
 		let menu;
 
@@ -75,8 +75,8 @@ const mapDispatchToProps = (dispatch) => {
 	}
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ComponentMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);
 
-ComponentMenu.propTypes = {
+Menu.propTypes = {
 	mode: PropTypes.string.isRequired
 }

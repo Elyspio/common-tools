@@ -6,6 +6,8 @@ builds/
 #################################
 .tmp/
 node_modules/
+build/
+dist/
 *.compiled.*
 
 # Folder config file #

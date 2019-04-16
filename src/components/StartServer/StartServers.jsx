@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FileInput, InputGroup} from "@blueprintjs/core";
 
 const fs = window.require("fs");
 

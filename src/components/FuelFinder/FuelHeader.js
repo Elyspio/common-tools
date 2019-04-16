@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Action } from '../../actions';
+import { Action } from '../../redux/Action';
 import { connect } from 'react-redux';
 import { FuelFinder } from './FuelFinder';
-import '../../assets/css/FuelFinder/FuelHeader.css';
+import './FuelHeader.css';
 
 class FuelHeader extends Component {
 
