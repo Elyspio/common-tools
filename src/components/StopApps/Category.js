@@ -22,6 +22,8 @@ export class Category {
 
 
 		const checkForOneCategory = (name, accept, category) => {
+			console.log(name);
+
 			for (let str of accept) {
 				if (name.includes(str.toLowerCase())) {
 					return category

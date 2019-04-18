@@ -17,8 +17,13 @@ export class ModelApp {
 
 	killApps = () => {
 		const exec = window.require('child_process').exec;
+
+		const isLinux = window.require("os").type();
+		const command = isLinux === "Linux" ? "kill " : " taskkill /PID "
+
 		for (let pid of this.pids) {
-			exec("taskkill /PID  " + pid + " /F", (err, stdout, stderr) => {
+
+			exec(command + pid + " /F", (err, stdout, stderr) => {
 				if (err)
 					throw err;
 

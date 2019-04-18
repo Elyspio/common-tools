@@ -13,10 +13,9 @@ class FuelButton extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			disabled: ""
+			disabled: this.props.fuelSetting.fuel === props.fuel
 		};
 
-		this.state.disabled = this.props.fuelSetting.fuel === props.fuel;
 	}
 
 	update = (newProps) => {

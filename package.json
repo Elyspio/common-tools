@@ -1,51 +1,54 @@
 {
-  "name": "os-tools",
-  "version": "0.1.0",
-  "main": "public/main.js",
-  "homepage": "./",
-  "private": true,
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "electron-start": "electron .",
-    "electron-dev-windows": "concurrently \"set BROWSER=none &&  yarn start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-dev-linux": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-pack-linux": "build --em.main=build/main.js --linux",
-    "electron-pack-windows": "build --em.main=build/main.js ",
-    "preelectron-pack": "yarn build"
-  },
-  "dependencies": {
-    "axios": "^0.18.0",
-    "classnames": "^2.2.6",
-    "electron-is-dev": "^0.3.0",
-    "primeicons": "^1.0.0",
-    "primereact": "^3.1.2",
-    "prop-types": "^15.7.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-redux": "^7.0.2",
-    "react-scripts": "1.0.13",
-    "react-transition-group": "^4.0.0",
-    "redux": "^4.0.1",
-    "redux-logger": "^3.0.6",
-    "xml-js": "^1.6.11"
-  },
-  "devDependencies": {
-    "concurrently": "^3.5.0",
-    "electron": "^4.1.4",
-    "electron-builder": "^19.27.7",
-    "wait-on": "^2.0.2"
-  },
-  "build": {
-    "appId": "fr.elyspio",
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    }
-  }
+	"name": "os-tools",
+	"version": "0.1.0",
+	"main": "public/main.js",
+	"homepage": "./",
+	"private": true,
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test --env=jsdom",
+		"eject": "react-scripts eject",
+		"electron-start": "electron .",
+		"electron-dev-windows": "concurrently \"set BROWSER=none &&  yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+		"electron-dev-linux": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+		"electron-pack-linux": "build --em.main=build/main.js --linux",
+		"electron-pack-windows": "build --em.main=build/main.js ",
+		"preelectron-pack": "yarn build"
+	},
+	"dependencies": {
+		"axios": "^0.18.0",
+		"classnames": "^2.2.6",
+		"electron-is-dev": "^0.3.0",
+		"primeicons": "^1.0.0",
+		"primereact": "^3.1.2",
+		"prop-types": "^15.7.2",
+		"react": "^16.2.0",
+		"react-dom": "^16.2.0",
+		"react-redux": "^7.0.2",
+		"react-scripts": "1.0.13",
+		"react-transition-group": "^4.0.0",
+		"redux": "^4.0.1",
+		"redux-logger": "^3.0.6",
+		"systeminformation": "^4.1.4",
+		"xml-js": "^1.6.11"
+	},
+	"devDependencies": {
+		"concurrently": "^3.5.0",
+		"electron": "^4.1.4",
+		"electron-builder": "^19.27.7",
+		"wait-on": "^2.0.2",
+		"@types/react": "^16.8.13",
+		"@types/systeminformation": "^3.23.1"
+	},
+	"build": {
+		"appId": "fr.elyspio",
+		"files": [
+			"build/**/*",
+			"node_modules/**/*"
+		],
+		"directories": {
+			"buildResources": "assets"
+		}
+	}
 }

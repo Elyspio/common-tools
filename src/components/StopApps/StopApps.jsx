@@ -6,6 +6,12 @@ import {Category} from "./Category";
 import {ModelApp} from "./ModelApp";
 
 
+const si = window.require("systeminformation");
+const os = window.require("os");
+
+const isLinux = os.type() === "Linux";
+
+
 const exec = window.require('child_process').exec;
 console.log("ICI", exec);
 
@@ -22,13 +28,12 @@ class StopApps extends Component {
 		this.state = StopApps.DEFAULT_STATE;
 		String.prototype.matchOne = function (values) {
 			for (let v of values) {
-				if (this.includes(v)) {
+				if (this.startsWith(v)) {
 					return true;
 				}
 			}
 			return false;
 		};
-
 
 	}
 
@@ -41,65 +46,155 @@ class StopApps extends Component {
 
 	getTask = () => {
 
-		console.log("coucou");
-		exec("tasklist", (err, stdout, stderr) => {
-			if (err) {
-				throw  err;
-			}
-			stdout = stdout.replace(/ +/g, "|");
-			const process = stdout.split("\n").slice(3);
+
+		console.log("coucou", isLinux);
 
 
-			if (this.state.lastNbOfApps !== process.length) {
+		if (isLinux) {
+
+
+			exec("ps -u elyspio", (err, stdout, strerr) => {
+				if (err) throw  err;
+
+				const rows = stdout.split("\n");
+
 				const setApps = [];
 
-				for (const p of process) {
+				for (let row  of rows) {
+					row = row.trim().replace(/ + /, " ");
+					const splited = row.split(" ");
 
-					const spliced = p.split("|");
-					const appPid = spliced[1];
+					if(splited[0] ==="")
+						continue;
 
-					let appName = spliced[0];
-					if (!appName.matchOne(["electron", "node", "tasklist"])) {
 
-						if (spliced.length === 6) {
+					console.log(splited);
 
-							if (spliced[3] === "1") {
+					const pid = splited[1];
+					const name = splited[3];
 
-								let appInd = setApps.findIndex(app => app.getName() === appName);
+					if (name.toLowerCase().matchOne("node", "electron", "ps"))
+									continue;
 
-								if (appInd < 0) {
-									setApps.push(new ModelApp(appName, appPid))
-								} else {
-									setApps[appInd].addPid(appPid);
-								}
-								console.log("H", appInd, setApps);
+						let appInd = setApps.findIndex(app => app.getName() === name);
 
-							}
-							console.log(spliced);
+						if (appInd < 0) {
+							setApps.push(new ModelApp(name, pid))
+						} else {
+							setApps[appInd].addPid(pid);
 						}
-					}
-
 
 				}
 
+						this.setState(prev => {
+							return {
+								...prev,
+								apps: setApps,
+								lastNbOfApps: rows.length
+							}
+						});
+			});
 
-				this.setState(prev => {
-					return {
-						...prev,
-						apps: setApps,
-						lastNbOfApps: process.length
+
+			// si.processes().then(ps => {
+			// 	console.log(ps.list);
+			//
+			// 	let list = ps.list.filter(p => p.user === "elyspio");
+			// 	console.log(list);
+			//
+			// 	if (list.length !== this.state.lastNbOfApps) {
+			// 		const setApps = [];
+			//
+			// 		for (const apps of list) {
+			//
+			// 			if (apps.name.toLowerCase().matchOne("node", "electron", "ps"))
+			// 				continue;
+			//
+			// 			let appInd = setApps.findIndex(app => app.getName() === apps.name);
+			//
+			// 			if (appInd < 0) {
+			// 				setApps.push(new ModelApp(apps.name, apps.pid))
+			// 			} else {
+			// 				setApps[appInd].addPid(apps.pid);
+			// 			}
+			// 			console.log("H", appInd, setApps);
+			// 		}
+			// 		this.setState(prev => {
+			// 			return {
+			// 				...prev,
+			// 				apps: setApps,
+			// 				lastNbOfApps: list.length
+			// 			}
+			// 		});
+			// 	}
+			//
+			//
+			// }).catch(err => {
+			// 	if (err) throw err;
+			// }).finally(() => {
+			// 	console.log("done");
+			// });
+		} else {
+			exec("tasklist", (err, stdout, stderr) => {
+				if (err) {
+					throw  err;
+				}
+				stdout = stdout.replace(/ +/g, "|");
+				const process = stdout.split("\n").slice(3);
+
+
+				if (this.state.lastNbOfApps !== process.length) {
+					const setApps = [];
+
+					for (const p of process) {
+
+						const spliced = p.split("|");
+						const appPid = spliced[1];
+
+						let appName = spliced[0];
+						if (!appName.matchOne(["electron", "node", "tasklist"])) {
+
+							if (spliced.length === 6) {
+
+								if (spliced[3] === "1") {
+
+									let appInd = setApps.findIndex(app => app.getName() === appName);
+
+									if (appInd < 0) {
+										setApps.push(new ModelApp(appName, appPid))
+									} else {
+										setApps[appInd].addPid(appPid);
+									}
+									console.log("H", appInd, setApps);
+
+								}
+								console.log(spliced);
+							}
+						}
+
+
 					}
-				});
 
 
-			} else {
-				console.log("Same number of processes");
-			}
+					this.setState(prev => {
+						return {
+							...prev,
+							apps: setApps,
+							lastNbOfApps: process.length
+						}
+					});
 
-			console.error(stderr);
+
+				} else {
+					console.log("Same number of processes");
+				}
+
+				console.error(stderr);
 
 
-		})
+			})
+		}
+		// Windaub
 
 
 	};
@@ -189,9 +284,11 @@ class StopApps extends Component {
 
 
 			<div id={"stopApps"}>
-				<h1>Stop apps</h1>
-				<button onClick={this.getTask}>TASK</button>
-				<button onClick={this.killTask}>kill</button>
+				<div id="header">
+					<h1>Stop apps</h1>
+					<button id={"kill"} onClick={this.killTask}>kill</button>
+
+				</div>
 				<div id={"apps"}>
 					<div id="gameApp">
 						<h2>Games</h2>
@@ -206,7 +303,7 @@ class StopApps extends Component {
 						{driveApp}
 					</div>
 					<div id="progApp">
-						<h2>Prog</h2>
+						<h2>Progs</h2>
 						{progApp}
 					</div>
 

@@ -20,20 +20,38 @@ class FuelHeader extends Component {
       order: ''
     };
 
-    if (this.props.sorter === this.props.fuelSetting.sortBy) {
-      if (this.props.fuelSetting.order === FuelFinder.settings.order.asc)
-        this.state.order = 'asc';
 
-      if (this.props.fuelSetting.order === FuelFinder.settings.order.dsc)
-        this.state.order = 'dsc';
-
-
-    }
 
 
   }
 
-  changeSortOrField = (sort) => {
+  componentDidMount() {
+	  if (this.props.sorter === this.props.fuelSetting.sortBy) {
+		  if (this.props.fuelSetting.order === FuelFinder.settings.order.asc)
+		  {
+			  this.setState(prev => {
+				  return {
+					  ...prev,
+					  order: "asc"
+				  }
+			  })
+		  }
+
+		  if (this.props.fuelSetting.order === FuelFinder.settings.order.dsc)
+		  {
+		  	this.setState(prev => {
+		  		return {
+		  			...prev,
+				    order: "dsc"
+			    }
+		    })
+		  }
+
+
+	  }
+  }
+
+	changeSortOrField = (sort) => {
     if (this.props.sorter !== this.props.fuelSetting.sortBy) {
       this.props.changeSorter(sort);
       this.props.reorder(FuelFinder.settings.order.asc);
