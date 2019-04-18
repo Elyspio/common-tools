@@ -64,7 +64,7 @@ class StopApps extends Component {
 					row = row.trim().replace(/ + /, " ");
 					const splited = row.split(" ");
 
-					if(splited[0] ==="")
+					if (splited[0] === "")
 						continue;
 
 
@@ -74,25 +74,25 @@ class StopApps extends Component {
 					const name = splited[3];
 
 					if (name.toLowerCase().matchOne("node", "electron", "ps"))
-									continue;
+						continue;
 
-						let appInd = setApps.findIndex(app => app.getName() === name);
+					let appInd = setApps.findIndex(app => app.getName() === name);
 
-						if (appInd < 0) {
-							setApps.push(new ModelApp(name, pid))
-						} else {
-							setApps[appInd].addPid(pid);
-						}
+					if (appInd < 0) {
+						setApps.push(new ModelApp(name, pid))
+					} else {
+						setApps[appInd].addPid(pid);
+					}
 
 				}
 
-						this.setState(prev => {
-							return {
-								...prev,
-								apps: setApps,
-								lastNbOfApps: rows.length
-							}
-						});
+				this.setState(prev => {
+					return {
+						...prev,
+						apps: setApps,
+						lastNbOfApps: rows.length
+					}
+				});
 			});
 
 
@@ -290,21 +290,24 @@ class StopApps extends Component {
 
 				</div>
 				<div id={"apps"}>
-					<div id="gameApp">
+					<div className="gameApp">
 						<h2>Games</h2>
-						{gameApp}
+						<div>{gameApp}</div>
 					</div>
-					<div id="undefinedApp">
+					<div className="undefinedApp">
 						<h2>Undefineds</h2>
-						{undefinedApp}
+						<div>{undefinedApp}</div>
+
 					</div>
-					<div id="driveApp">
+					<div className="driveApp">
 						<h2>Drives</h2>
-						{driveApp}
+						<div>{driveApp}</div>
+
 					</div>
-					<div id="progApp">
+					<div className="progApp">
 						<h2>Progs</h2>
-						{progApp}
+						<div>{progApp}</div>
+
 					</div>
 
 				</div>

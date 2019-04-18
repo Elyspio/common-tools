@@ -4,6 +4,8 @@
 
 * {
 	font-family: "Roboto", cursive;
+	user-select: none;
+
 }
 
 div#App {
