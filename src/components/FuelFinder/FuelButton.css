@@ -1,0 +1,34 @@
+
+
+
+div.fuels button.fuelButton {
+	background-color: #333333;
+	width: 4.85410196625rem;
+	height: 3rem;
+	border: 1px solid #404040;
+	border-radius: 1rem;
+	transition: all ease-in 100ms;
+	color : orange;
+
+}
+
+.header p, div.fuels button.fuelButton:hover {
+	cursor: pointer;
+}
+
+
+div.fuels button.fuelButton:hover {
+	background-color: #be6000;
+
+}
+
+
+div.fuels button.fuelButton:disabled {
+	color : darkgrey;
+}
+
+div.fuels  button.fuelButton:hover:disabled {
+	cursor : not-allowed;
+	transition: none;
+	background-color: grey;
+}
