@@ -13,7 +13,6 @@ const isLinux = os.type() === "Linux";
 
 
 const exec = window.require('child_process').exec;
-console.log("ICI", exec);
 
 class StopApps extends Component {
 
@@ -46,10 +45,6 @@ class StopApps extends Component {
 
 	getTask = () => {
 
-
-		console.log("coucou", isLinux);
-
-
 		if (isLinux) {
 
 
@@ -68,7 +63,6 @@ class StopApps extends Component {
 						continue;
 
 
-					console.log(splited);
 
 					const pid = splited[1];
 					const name = splited[3];
@@ -95,45 +89,6 @@ class StopApps extends Component {
 				});
 			});
 
-
-			// si.processes().then(ps => {
-			// 	console.log(ps.list);
-			//
-			// 	let list = ps.list.filter(p => p.user === "elyspio");
-			// 	console.log(list);
-			//
-			// 	if (list.length !== this.state.lastNbOfApps) {
-			// 		const setApps = [];
-			//
-			// 		for (const apps of list) {
-			//
-			// 			if (apps.name.toLowerCase().matchOne("node", "electron", "ps"))
-			// 				continue;
-			//
-			// 			let appInd = setApps.findIndex(app => app.getName() === apps.name);
-			//
-			// 			if (appInd < 0) {
-			// 				setApps.push(new ModelApp(apps.name, apps.pid))
-			// 			} else {
-			// 				setApps[appInd].addPid(apps.pid);
-			// 			}
-			// 			console.log("H", appInd, setApps);
-			// 		}
-			// 		this.setState(prev => {
-			// 			return {
-			// 				...prev,
-			// 				apps: setApps,
-			// 				lastNbOfApps: list.length
-			// 			}
-			// 		});
-			// 	}
-			//
-			//
-			// }).catch(err => {
-			// 	if (err) throw err;
-			// }).finally(() => {
-			// 	console.log("done");
-			// });
 		} else {
 			exec("tasklist", (err, stdout, stderr) => {
 				if (err) {
@@ -165,10 +120,8 @@ class StopApps extends Component {
 									} else {
 										setApps[appInd].addPid(appPid);
 									}
-									console.log("H", appInd, setApps);
 
 								}
-								console.log(spliced);
 							}
 						}
 
@@ -189,7 +142,6 @@ class StopApps extends Component {
 					console.log("Same number of processes");
 				}
 
-				console.error(stderr);
 
 
 			})
@@ -203,7 +155,6 @@ class StopApps extends Component {
 		let toKill = this.state.toKill;
 		const index = toKill.findIndex(app => app.getName() === modelApp.getName());
 
-		console.log("Coucou", index);
 
 		if (index > -1) {
 			toKill.splice(index, 1);
@@ -217,7 +168,6 @@ class StopApps extends Component {
 				toKill: toKill
 			}
 		}, () => {
-			console.log("Tokill : ", this.state.toKill);
 		})
 	};
 
@@ -241,15 +191,16 @@ class StopApps extends Component {
 
 	render() {
 
+		let id = 0;
 		const undefinedApp = [], gameApp = [], progApp = [], driveApp = [];
 		this.state.apps.forEach(app => {
-
+			id++;
 			const name = app.getName();
 			let cat = Category.from(name);
 			const selected = this.state.toKill.includes(app);
 			switch (cat) {
 				case Category.PROG:
-					progApp.push(<App cb={this.toggleApp}
+					progApp.push(<App key={id}  cb={this.toggleApp}
 					                  category={cat}
 					                  selected={selected}
 					                  model={app}/>);
@@ -257,21 +208,21 @@ class StopApps extends Component {
 
 
 				case Category.DRIVE:
-					driveApp.push(<App cb={this.toggleApp}
+					driveApp.push(<App key={id}  cb={this.toggleApp}
 					                   category={cat}
 					                   selected={selected}
 					                   model={app}/>);
 					break;
 
 				case Category.GAME:
-					gameApp.push(<App cb={this.toggleApp}
+					gameApp.push(<App key={id} cb={this.toggleApp}
 					                  category={cat}
 					                  selected={selected}
 					                  model={app}/>);
 					break;
 
 				case Category.UNDEFINED:
-					undefinedApp.push(<App cb={this.toggleApp}
+					undefinedApp.push(<App key={id}  cb={this.toggleApp}
 					                       category={cat}
 					                       selected={selected}
 					                       model={app}/>);
@@ -325,6 +276,13 @@ class App extends Component {
 		selected: PropTypes.bool.isRequired,
 		model: PropTypes.instanceOf(ModelApp).isRequired
 	};
+
+	static nbOfApps = 0;
+
+	constructor(props) {
+		super(props);
+		App.nbOfApps++;
+	}
 
 
 	render() {

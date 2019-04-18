@@ -32,38 +32,48 @@ div.selected {
 	font-weight: bold;
 }
 
-
-div#apps div.gameApp {
-	color: dodgerblue;
-}
-
 div#apps > div > div {
 	overflow-y: auto;
 	max-height: 70vh;
 }
 
-
-
-
+/*#region Scrollbar background*/
 
 div#apps div div::-webkit-scrollbar {
-	width: 8px;
+	width: 6px;
 	background-color: #33333333;
 }
 
+/*#endregion */
+
+/*#region Undefined App*/
 div#apps div.undefinedApp div::-webkit-scrollbar-thumb {
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
 	background-color: grey;
 }
 
-
 div#apps div.undefinedApp, div#apps div.undefinedApp div {
 	color: grey;
 
 }
 
+/*#endregion */
 
+/*#region Game App*/
+div#apps div.gameApp {
+	color: dodgerblue;
+}
+
+div#apps div.gameApp div::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+	background-color: dodgerblue;
+}
+
+/*#endregion */
+
+/*#region Drive App*/
 div#apps div.driveApp div::-webkit-scrollbar-thumb {
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
@@ -74,18 +84,24 @@ div#apps div.driveApp {
 	color: yellow;
 }
 
+/*#endregion */
+
+/*#region Prog App*/
 div#apps div.progApp div::-webkit-scrollbar-thumb {
 	border-radius: 10px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
 	background-color: #00a300;
 }
 
-
 div#apps div.progApp {
 	color: #00a300;
 }
 
+/*#endregion */
+
+/*#region Apps (texte)*/
 div.app {
 	margin: 0.3rem;
 }
+/*#endregion */
 
