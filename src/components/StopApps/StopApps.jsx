@@ -182,7 +182,7 @@ class StopApps extends Component {
 				...prev,
 				toKill: []
 			}
-		})
+		});
 
 		this.getTask();
 

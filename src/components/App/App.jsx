@@ -18,6 +18,7 @@ import StopApps from "../StopApps/StopApps";
 import StartServers from "../StartServer/StartServers";
 import Menu from "../Menu/Menu";
 import Rename from "../Rename/Rename";
+import SystemMonitor from "../SystemMonitor/SystemMonitor";
 
 
 
@@ -44,6 +45,10 @@ class App extends React.Component {
 			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS:
 				comp = <StopApps/>;
 				break;
+				
+				
+			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR:
+				comp = <SystemMonitor/>;
 			default:
 				break;
 		}

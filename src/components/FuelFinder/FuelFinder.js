@@ -101,7 +101,7 @@ class FuelFinder extends Component {
 			pdv: [],
 			allPdv: [],
 			fetchProgress: 0
-		}
+		};
 
 		this.onlyOneFetcher(this.update);
 
@@ -133,7 +133,7 @@ class FuelFinder extends Component {
 		);
 
 
-	}
+	};
 
 	onlyOneFetcher = (callback) => {
 
@@ -215,7 +215,7 @@ class FuelFinder extends Component {
 			pdv: pdvs
 		}));
 
-	}
+	};
 
 
 	update = (props = this.props) => {
@@ -384,7 +384,7 @@ class FuelFinder extends Component {
 
 		let obj = {
 			format: this.props.fuelSetting.format
-		}
+		};
 
 		const keys = Object.keys(obj);
 		for (let i = 0; i < keys.length; i++) {

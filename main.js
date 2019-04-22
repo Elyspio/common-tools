@@ -1,16 +1,16 @@
-'use strict'
+'use strict';
 
 // Import parts of electron to use
-const {app, BrowserWindow} = require('electron')
-const path = require('path')
-const url = require('url')
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow;
 
 // Keep a reference for dev mode
-let dev = false
+let dev = false;
 
 if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
 	dev = true
@@ -19,7 +19,7 @@ if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) |
 // Temporary fix broken high-dpi scale factor on Windows (125% scaling)
 // info: https://github.com/electron/electron/issues/9691
 if (process.platform === 'win32') {
-	app.commandLine.appendSwitch('high-dpi-support', 'true')
+	app.commandLine.appendSwitch('high-dpi-support', 'true');
 	app.commandLine.appendSwitch('force-device-scale-factor', '1')
 }
 
@@ -29,11 +29,15 @@ function createWindow() {
 		width: 900,
 		height: 600,
 		// resizable: false,
-		show: false
-	})
+		show: false,
+		// webPreferences: {
+		// 	nodeIntegration: false,
+		// 	preload: './preload.js'
+		// }
+	});
 
 	// and load the index.html of the app.
-	let indexPath
+	let indexPath;
 
 	if (dev && process.argv.indexOf('--noDevServer') === -1) {
 		indexPath = url.format({
@@ -50,17 +54,17 @@ function createWindow() {
 		})
 	}
 
-	mainWindow.loadURL(indexPath)
+	mainWindow.loadURL(indexPath);
 
 	// Don't show until we are ready and loaded
 	mainWindow.once('ready-to-show', () => {
-		mainWindow.show()
+		mainWindow.show();
 
 		// Open the DevTools automatically if developing
 		if (dev) {
 			mainWindow.webContents.openDevTools()
 		}
-	})
+	});
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
@@ -74,7 +78,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -83,7 +87,7 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit()
 	}
-})
+});
 
 app.on('activate', () => {
 	// On macOS it's common to re-create a window in the app when the
@@ -91,4 +95,4 @@ app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow()
 	}
-})
+});

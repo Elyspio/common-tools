@@ -35,7 +35,7 @@ const componentReducer = (state = DEFAULT_STATE.COMPONENT, action) => {
 };
 
 const fuelReducer = (state = DEFAULT_STATE.FUEL, action) => {
-	console.log(action.type, Action.FUEL_FINDER.CHANGE_SORTER.TYPE, action.payload)
+	console.log(action.type, Action.FUEL_FINDER.CHANGE_SORTER.TYPE, action.payload);
 	switch (action.type) {
 
 		case Action.FUEL_FINDER.CHANGE_FUEL.TYPE:

@@ -19,7 +19,7 @@ export class ModelApp {
 		const exec = window.require('child_process').exec;
 
 		const isLinux = window.require("os").type();
-		const command = isLinux === "Linux" ? "kill " : " taskkill /PID "
+		const command = isLinux === "Linux" ? "kill " : " taskkill /PID ";
 
 		for (let pid of this.pids) {
 

@@ -21,7 +21,7 @@ class CpModal extends React.Component {
 			...prev,
 			cp: e.target.value
 		}))
-	}
+	};
 
 
 	render() {
@@ -37,7 +37,7 @@ class CpModal extends React.Component {
 	processEnter = (e) => {
 		if (e.key === 'Enter')
 			this.props.changeCp(this.state.cp);
-	}
+	};
 
 	componentDidMount() {
 		document.querySelector("#cpInput").focus();
@@ -49,7 +49,7 @@ const mapStateToProps = (state) => {
 	return {
 		fuelSetting: state.fuelSetting
 	}
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
 	return {

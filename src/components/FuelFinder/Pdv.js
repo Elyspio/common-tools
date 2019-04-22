@@ -27,7 +27,7 @@ class Pvd {
 			return "Inconnu ";
 
 		let splices = input.toLocaleLowerCase().replace(new RegExp("[-_]", "g"), " ").split(" ");
-		let output = ""
+		let output = "";
 		for (let i = 0; i < splices.length; i++) {
 			if (splices[i].length > 3) {
 				output += `${splices[i][0].toUpperCase()}${splices[i].slice(1)} `;
@@ -37,8 +37,7 @@ class Pvd {
 		return output;
 	}
 
-};
-
+}
 
 class PdvComp extends React.Component {
 	static nbComp = 0;
@@ -50,7 +49,7 @@ class PdvComp extends React.Component {
 		dist: PropTypes.number.isRequired,
 		city: PropTypes.string.isRequired,
 		price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-	}
+	};
 
 	constructor(props) {
 		super(props);

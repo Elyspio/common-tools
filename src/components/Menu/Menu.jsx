@@ -26,6 +26,10 @@ class Menu extends React.Component {
 						{
 							label : "Stop apps",
 							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS)
+						},
+						{
+							label : "System Monitor",
+							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR)
 						}
 					]
 				},
@@ -79,4 +83,4 @@ export default connect(mapStateToProps, mapDispatchToProps)(Menu);
 
 Menu.propTypes = {
 	mode: PropTypes.string.isRequired
-}
+};

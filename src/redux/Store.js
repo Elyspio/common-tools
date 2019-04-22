@@ -1,6 +1,7 @@
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import {componentReducer, fuelReducer} from './Reducer';
 import {createLogger} from 'redux-logger';
+import {Action} from "./Action";
 
 const getStore = () => {
 
@@ -15,6 +16,13 @@ const getStore = () => {
 };
 
 const store = getStore();
+
+
+// default component
+store.dispatch({
+	type : Action.CHANGE_COMPONENT.TYPE,
+	payload : Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR
+});
 
 export {
   store
