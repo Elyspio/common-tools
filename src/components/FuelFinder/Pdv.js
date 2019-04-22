@@ -2,30 +2,30 @@ import PropTypes from "prop-types";
 import React from "react";
 
 class Pvd {
-
+	
 	brand;
 	cp;
 	price;
 	dist;
 	address;
 	city;
-
+	
 	constructor(props) {
-
+		
 		this.brand = "";
 		this.cp = props.cp;
 		this.price = props.price;
 		this.dist = 0;
 		this.address = this.removeSpecialChars(props.address);
 		this.city = this.removeSpecialChars(props.city);
-
+		
 	}
-
+	
 	removeSpecialChars = (input) => {
-
-		if(input === undefined)
+		
+		if (input === undefined)
 			return "Inconnu ";
-
+		
 		let splices = input.toLocaleLowerCase().replace(new RegExp("[-_]", "g"), " ").split(" ");
 		let output = "";
 		for (let i = 0; i < splices.length; i++) {
@@ -33,15 +33,15 @@ class Pvd {
 				output += `${splices[i][0].toUpperCase()}${splices[i].slice(1)} `;
 			}
 		}
-
+		
 		return output;
 	}
-
+	
 }
 
 class PdvComp extends React.Component {
 	static nbComp = 0;
-
+	
 	static propTypes = {
 		address: PropTypes.string.isRequired,
 		brand: PropTypes.string.isRequired,
@@ -50,7 +50,7 @@ class PdvComp extends React.Component {
 		city: PropTypes.string.isRequired,
 		price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 	};
-
+	
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -60,16 +60,16 @@ class PdvComp extends React.Component {
 			cp: props.cp,
 			price: props.price,
 			dist: props.dist,
-
+			
 		};
-
-
+		
+		
 	}
-
-
+	
+	
 	render() {
-
-
+		
+		
 		return (
 			<div className="row">
 				<p className={"brand"}>{this.state.brand}</p>
@@ -79,8 +79,8 @@ class PdvComp extends React.Component {
 				<p className={"price"}>{this.state.price}</p>
 				<p className={"dist"}>{this.state.dist}</p>
 			</div>
-
-
+		
+		
 		);
 	}
 }

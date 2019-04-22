@@ -20,12 +20,12 @@ div#App {
 div#currentComponent {
 	grid-area: component;
 	/*background: #161616;*/
-	margin:2rem;
-	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+	margin: 2rem;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 
-div#currentComponent >  div {
-	padding : 1rem
+div#currentComponent > div {
+	padding: 1rem
 }
 
 div#menu {
@@ -34,9 +34,9 @@ div#menu {
 }
 
 
-.components  {
+.components {
 	background-color: #33333333;
-	color : white;
+	color: white;
 }
 
 body, html, div#root, div#App {

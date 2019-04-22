@@ -21,45 +21,44 @@ import Rename from "../Rename/Rename";
 import SystemMonitor from "../SystemMonitor/SystemMonitor";
 
 
-
 // nova dark stheme
 
 
 class App extends React.Component {
 	render() {
-
+		
 		let comp;
 		switch (this.props.component.current) {
 			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.RENAME:
 				comp = <Rename/>;
 				break;
-
+			
 			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.FUEL_WORKER:
 				comp = <FuelFinder/>;
 				break;
-
+			
 			case Action.CHANGE_COMPONENT.PAYLOAD.DEV.START_SERVERS:
 				comp = <StartServers/>;
 				break;
-
+			
 			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS:
 				comp = <StopApps/>;
 				break;
-				
-				
+			
+			
 			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR:
 				comp = <SystemMonitor/>;
 			default:
 				break;
 		}
-
+		
 		return (
 			<div id={"App"}>
 				<div id="menu" className={"components"}>
-					<Menu mode={"primereact"} />
-
+					<Menu mode={"primereact"}/>
+				
 				</div>
-
+				
 				<div id={"currentComponent"} className={"components"}>
 					{comp}
 				</div>

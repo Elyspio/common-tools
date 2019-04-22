@@ -5,11 +5,11 @@ div#componentMenu {
 }
 
 div#componentMenu div {
-	box-shadow: 0 8px 12px rgba(0,0,0,0.21), 0 6px 6px rgba(0,0,0,0.23);
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.21), 0 6px 6px rgba(0, 0, 0, 0.23);
 
 }
 
-span.p-menuitem-text, a.p-menuitem-lin  {
+span.p-menuitem-text, a.p-menuitem-lin {
 	text-align: left;
 }
 

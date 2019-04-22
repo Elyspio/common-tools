@@ -6,6 +6,7 @@ div.header p.sorter {
 div.header p.sorter.asc::after {
 	content: '↑';
 }
+
 div.header p.sorter.dsc::after {
-	content : '↓'
+	content: '↓'
 }

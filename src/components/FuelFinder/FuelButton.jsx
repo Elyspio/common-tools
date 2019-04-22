@@ -5,37 +5,37 @@ import {connect} from "react-redux";
 import './FuelButton.css'
 
 class FuelButton extends React.Component {
-
+	
 	static propTypes = {
 		fuel: PropTypes.object.isRequired,
 	};
-
+	
 	constructor(props) {
 		super(props);
 		this.state = {
 			disabled: this.props.fuelSetting.fuel === props.fuel
 		};
-
+		
 	}
-
+	
 	update = (newProps) => {
-
+		
 		this.setState({
 			disabled: newProps.fuelSetting.fuel === this.props.fuel
 		})
 	};
-
-
+	
+	
 	componentWillReceiveProps = (nextProps, nextContext) => {
-
+		
 		if (nextProps.fuelSetting !== this.props.fuelSetting)
 			this.update(nextProps);
-
+		
 	};
-
+	
 	render() {
-
-
+		
+		
 		return (
 			<button className={"fuelButton"} onClick={() => this.props.changeFuel(this.props.fuel)}
 			        disabled={this.state.disabled}>
@@ -48,14 +48,14 @@ class FuelButton extends React.Component {
 function mapDispatchToProps(dispatch) {
 	return {
 		changeFuel: (fuel) => {
-
-
+			
+			
 			dispatch({
 				type: Action.FUEL_FINDER.CHANGE_FUEL.TYPE,
 				payload: fuel
 			})
-
-
+			
+			
 		},
 	}
 }

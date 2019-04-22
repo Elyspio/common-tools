@@ -2,24 +2,24 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 function mapStateToProps(state) {
-  return {};
+	return {};
 }
 
 function mapDispatchToProps(dispatch) {
-  return {};
+	return {};
 }
 
 class Rename extends Component {
-  render() {
-    return (
-      <div>
-        <h1>Rename !</h1>
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div>
+				<h1>Rename !</h1>
+			</div>
+		);
+	}
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+	mapStateToProps,
+	mapDispatchToProps
 )(Rename);

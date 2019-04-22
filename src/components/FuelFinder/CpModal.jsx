@@ -6,14 +6,14 @@ import {connect} from "react-redux";
 import {Button} from "primereact/button";
 
 class CpModal extends React.Component {
-
+	
 	constructor(props) {
 		super(props);
 		this.state = {
 			cp: this.props.fuelSetting.cp
 		}
 	}
-
+	
 	changeValue = (e) => {
 		e.persist();
 		console.log(e.target.value);
@@ -22,8 +22,8 @@ class CpModal extends React.Component {
 			cp: e.target.value
 		}))
 	};
-
-
+	
+	
 	render() {
 		return (
 			<div className={"cpModal"}>
@@ -33,16 +33,16 @@ class CpModal extends React.Component {
 			</div>
 		);
 	}
-
+	
 	processEnter = (e) => {
 		if (e.key === 'Enter')
 			this.props.changeCp(this.state.cp);
 	};
-
+	
 	componentDidMount() {
 		document.querySelector("#cpInput").focus();
 	}
-
+	
 }
 
 const mapStateToProps = (state) => {
@@ -53,7 +53,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-
+		
 		changeCp: (cp) => {
 			dispatch({
 				type: Action.FUEL_FINDER.CHANGE_CP.TYPE,

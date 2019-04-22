@@ -8,9 +8,9 @@ import "./Menu.css"
 class Menu extends React.Component {
 	render() {
 		let menu;
-
+		
 		if (this.props.mode === "primereact") {
-
+			
 			const items = [
 				{
 					label: "Fun",
@@ -20,15 +20,15 @@ class Menu extends React.Component {
 							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.RENAME)
 						},
 						{
-							label : "Fuel worker",
-							command : () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.FUEL_WORKER)
+							label: "Fuel worker",
+							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.FUEL_WORKER)
 						},
 						{
-							label : "Stop apps",
+							label: "Stop apps",
 							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS)
 						},
 						{
-							label : "System Monitor",
+							label: "System Monitor",
 							command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR)
 						}
 					]
@@ -39,9 +39,9 @@ class Menu extends React.Component {
 						{
 							label: "Web",
 							items: [
-
+								
 								{
-
+									
 									label: "Servers Stater",
 									command: () => this.props.changeComponent(Action.CHANGE_COMPONENT.PAYLOAD.DEV.START_SERVERS)
 								}
@@ -50,17 +50,17 @@ class Menu extends React.Component {
 					]
 				}
 			];
-
+			
 			menu = <PanelMenu model={items}/>
 		}
-
+		
 		return (
 			<div id={"componentMenu"}>
 				{menu}
 			</div>
 		);
-
-
+		
+		
 	}
 }
 

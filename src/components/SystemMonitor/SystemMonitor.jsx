@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import CanvasJsReact from '../../lib/canvasJs/canvasjs.react';
-
-// const canvasJsReact = require("../../lib/canvasJs/canvasjs.react")
-
-const CanvasJsChart = CanvasJsReact.CanvasJSChart;
+import {Line, defaults} from 'react-chartjs-2'
+import Color from 'color';
 
 let si = require("systeminformation");
 
@@ -38,7 +35,7 @@ class DataArray {
 		}
 		this.data.push({
 			...data,
-			time : Date.now()
+			time: Date.now()
 		});
 		
 		return this
@@ -63,14 +60,27 @@ class SystemMonitor extends Component
 		HIGHEST: 0.25,
 		MAX: 0.2
 	};
-	static PRINT_TIME = true;
+	static PRINT_TIME = false;
 	static LOW_REFRESH_RATE = 1e4;
 	static HIGH_REFRESH_RATE = 1e3;
 	static NEVER_REFRESH_RATE = Infinity;
-	currentSpeedModifier = SystemMonitor.REFRESH_SPEED_MODIFIER.MEDIUM;
+	currentSpeedModifier = SystemMonitor.REFRESH_SPEED_MODIFIER.HIGHEST;
+	
+	chartRef = null;
+	
+	COLORS = {
+		cpu: []
+		
+	};
 	
 	constructor(props) {
 		super(props);
+		
+		// defaults.global = {
+		// 	...defaults.global,
+		// 	animation : false
+		// }
+		
 		const self = this;
 		this.state = {
 			
@@ -113,20 +123,30 @@ class SystemMonitor extends Component
 					
 					this.setState(prev => {
 						return {
-							lowFrequencyArray : prev.lowFrequencyArray.push(lowFrequencyData),
-							highFrequencyArray : prev.highFrequencyArray.push(highFrequencyData),
-							neverFrequencyData : neverFrequencyData
+							lowFrequencyArray: prev.lowFrequencyArray.push(lowFrequencyData),
+							highFrequencyArray: prev.highFrequencyArray.push(highFrequencyData),
+							neverFrequencyData: neverFrequencyData
 						}
-				
+						
 						
 					}, () => {
 						console.log("Constructor State : ", this.state);
+						
+						for (let i = 0; i < this.state.neverFrequencyData.info.cores; i++) {
+							this.COLORS.cpu[i] = SystemMonitor.getRandomColor();
+						}
+						
+						
 						self.initRefresh();
 					});
 				});
 			});
 		});
 		
+	}
+	
+	componentDidMount() {
+		console.log(this.chartRef);
 	}
 	
 	componentWillUnmount() {
@@ -144,7 +164,6 @@ class SystemMonitor extends Component
 						battery: battery,
 						network: network
 					});
-					
 					
 					
 					return {
@@ -316,28 +335,123 @@ class SystemMonitor extends Component
 		
 	}
 	
+	
+	static getRandomColor() {
+		const letters = '0123456789ABCDEF';
+		let color = '#';
+		for (let i = 0; i < 6; i++) {
+			color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
+	}
+	
 	render()
 	{
 		
-		const options = {
-			title: {
-				text: "Basic Column Chart in React"
-			},
-			data: [{
-				type: "column",
-				dataPoints: [
-					{label: "Apple", y: 10},
-					{label: "Orange", y: 15},
-					{label: "Banana", y: 25},
-					{label: "Mango", y: 30},
-					{label: "Grape", y: 28}
-				]
-			}]
+		console.log(this.COLORS);
+		
+		const cpuFrequencyData = {
+			labels: [],
+			datasets: [{
+				label: "",
+				data: []
+			}],
 		};
 		
+		const highFrequencyData = this.state.highFrequencyArray.getData();
+		console.log(highFrequencyData);
+		
+		
+		// High Frequency Labels
+		for (let i = 0; i < highFrequencyData.length; i++) {
+			
+			const date = new Date(highFrequencyData[i].time);
+			
+			const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+			cpuFrequencyData.labels.push(time);
+			
+		}
+		
+		
+		const DETAIL_CPU_FREQUENCY = false;
+		if (highFrequencyData.length > 0) {
+			
+			const nbCores = this.state.neverFrequencyData.info.cores;
+			
+			
+			if (DETAIL_CPU_FREQUENCY) {
+				
+				for (let i = 0; i < nbCores; i++) {
+					
+					cpuFrequencyData.datasets[i] = {
+						label: `proc : ${i}`,
+						borderColor: this.COLORS.cpu[i],
+						data: [],
+						backgroundColor: "#00000000"
+					};
+					
+					
+					for (let j = 0; j < highFrequencyData.length; j++) {
+						cpuFrequencyData.datasets[i].data[j] = highFrequencyData[j].cpu.speed.cores[i];
+					}
+					
+				}
+			} else {
+				
+				
+				cpuFrequencyData.datasets[0] = {
+					label: "average",
+					borderColor: "#ffffff",
+					data: [],
+					
+				};
+				
+				
+				for (let i = 0; i < highFrequencyData.length; i++) {
+					
+					let sum = 0;
+					highFrequencyData[i].cpu.speed.cores.forEach(speed => sum += speed);
+					cpuFrequencyData.datasets[0].data[i] = sum / highFrequencyData[i].cpu.speed.cores.length
+				}
+				
+			}
+			
+		}
+		
+		
+		// for (let i = 0; i < highFrequencyData.length; i++) {
+		//
+		// 	const {speed, temp} = highFrequencyData[i].cpu;
+		// 	const speedCores = speed.cores;
+		//
+		// 	const nbCores = speedCores.length;
+		// 	for (let j = 0; j < nbCores; j++) {
+		// 		cpuFrequencyData.datasets[j] = {};
+		// 		cpuFrequencyData.datasets[j].label = `processor ${i}`;
+		//
+		// 	}
+		//
+		// 	console.log(i);
+		// }
+		
+		
+		const options = {
+			animation: false,
+			scales: {
+				yAxes: [{
+					ticks: {
+						min: 0,
+						max:  5,
+						stepSize: 0.5
+					}
+				}]
+			}
+	
+			
+		};
 		return (
 			<div id={"SystemMonitor"}>
-				<CanvasJsChart options={options}/>
+				<Line data={cpuFrequencyData} options={options} ref={(ref) => this.chartRef = ref}/>
 			</div>
 		);
 	}
