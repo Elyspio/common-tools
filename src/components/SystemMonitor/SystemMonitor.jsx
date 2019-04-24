@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {Line, defaults} from 'react-chartjs-2'
-import Color from 'color';
-
+import {Line} from 'react-chartjs-2'
+import {object, string, number} from 'prop-types'
 let si = require("systeminformation");
 
 si = window.require("systeminformation");
@@ -49,6 +48,69 @@ class DataArray {
 }
 
 
+const DataType = {
+	cpu: {
+		load: "CPU_LOAD",
+		frequency: "CPU_FREQUENCY",
+		temp: "CPU_TEMP"
+	},
+	
+	mem: "MEMORY",
+	disk: "DISK"
+	
+}
+
+class DataChart extends Component {
+	
+	
+	static options = {
+		animation: false,
+		scales: {
+			yAxes: [{
+				ticks: {
+					min: 0,
+					max: 5,
+					stepSize: 0.5
+				}
+			}]
+		}
+		
+		
+	};
+	// todo render(type)
+	static propTypes = {
+		type: DataType,
+		data : object,
+		label : string,
+		nbChart : number
+		
+	};
+	
+	constructor(props, context) {
+		super(props, context);
+		
+	}
+	
+	
+	render() {
+		
+		const charts = [];
+		
+		
+		return (
+			<div className={"dataChart"}>
+				{charts}
+			</div>
+		);
+	}
+}
+
+export {
+	DataChart,
+	DataType
+};
+
+
 class SystemMonitor extends Component
 {
 	
@@ -64,7 +126,7 @@ class SystemMonitor extends Component
 	static LOW_REFRESH_RATE = 1e4;
 	static HIGH_REFRESH_RATE = 1e3;
 	static NEVER_REFRESH_RATE = Infinity;
-	currentSpeedModifier = SystemMonitor.REFRESH_SPEED_MODIFIER.HIGHEST;
+	currentSpeedModifier = SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH;
 	
 	chartRef = null;
 	
@@ -105,8 +167,9 @@ class SystemMonitor extends Component
 					
 					const highFrequencyData = {
 						cpu: {
-							speed: highRefreshData.cpuSpeed,
+							frequency: highRefreshData.cpuFrequency,
 							temp: highRefreshData.cpuTemp,
+							load: highRefreshData.cpuLoad
 						},
 						disk: highRefreshData.disk,
 						memory: highRefreshData.memory,
@@ -145,6 +208,15 @@ class SystemMonitor extends Component
 		
 	}
 	
+	static getRandomColor() {
+		const letters = '0123456789ABCDEF';
+		let color = '#';
+		for (let i = 0; i < 6; i++) {
+			color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
+	}
+	
 	componentDidMount() {
 		console.log(this.chartRef);
 	}
@@ -179,13 +251,14 @@ class SystemMonitor extends Component
 		
 		setInterval(() => {
 			this.getDynamicData(SystemMonitor.HIGH_REFRESH_RATE).then(data => {
-				const {cpuSpeed, cpuTemp, memory, network, disk} = data;
+				const {cpuFrequency, cpuTemp, memory, network, disk, cpuLoad} = data;
 				this.setState(prev => {
 					
 					const highFrequencyArray = prev.highFrequencyArray.push({
 						cpu: {
 							...prev.cpu,
-							speed: cpuSpeed,
+							frequency: cpuFrequency,
+							load: cpuLoad,
 							temp: cpuTemp
 						},
 						disk: disk,
@@ -218,9 +291,14 @@ class SystemMonitor extends Component
 				
 				console.time("SystemMonitor.HIGH_REFRESH_RATE");
 				
-				console.time("cpuSpeed");
-				let cpuSpeed = await si.cpuCurrentspeed();
-				console.timeEnd("cpuSpeed");
+				console.time("cpuFrequency");
+				let cpuLoad = await si.currentLoad();
+				console.timeEnd("cpuFrequency");
+				
+				
+				console.time("cpuFrequency");
+				let cpuFrequency = await si.cpuCurrentspeed();
+				console.timeEnd("cpuFrequency");
 				
 				console.time("cpuTemp");
 				let cpuTemp = await si.cpuTemperature();
@@ -246,11 +324,12 @@ class SystemMonitor extends Component
 				console.timeEnd("SystemMonitor.HIGH_REFRESH_RATE");
 				
 				return {
-					cpuSpeed: cpuSpeed,
+					cpuFrequency: cpuFrequency,
 					cpuTemp: cpuTemp,
+					cpuLoad: cpuLoad,
 					memory: memory,
 					disk: disk,
-					network: network
+					network: network,
 					
 				}
 				
@@ -265,8 +344,9 @@ class SystemMonitor extends Component
 				}
 				
 				return {
-					cpuSpeed: await si.cpuCurrentspeed(),
+					cpuFrequency: await si.cpuCurrentspeed(),
 					cpuTemp: await si.cpuTemperature(),
+					cpuLoad: await si.currentLoad(),
 					memory: await si.mem(),
 					disk: await si.fsSize(),
 					network: obj
@@ -335,18 +415,7 @@ class SystemMonitor extends Component
 		
 	}
 	
-	
-	static getRandomColor() {
-		const letters = '0123456789ABCDEF';
-		let color = '#';
-		for (let i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 16)];
-		}
-		return color;
-	}
-	
-	render()
-	{
+	render() {
 		
 		console.log(this.COLORS);
 		
@@ -357,6 +426,15 @@ class SystemMonitor extends Component
 				data: []
 			}],
 		};
+		
+		const cpuLoadData = {
+			labels: [],
+			datasets: [{
+				label: "",
+				data: [],
+			}]
+		}
+		
 		
 		const highFrequencyData = this.state.highFrequencyArray.getData();
 		console.log(highFrequencyData);
@@ -369,11 +447,13 @@ class SystemMonitor extends Component
 			
 			const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 			cpuFrequencyData.labels.push(time);
+			cpuLoadData.labels.push(time);
 			
 		}
 		
 		
 		const DETAIL_CPU_FREQUENCY = false;
+		const DETAIL_CPU_LOAD = true;
 		if (highFrequencyData.length > 0) {
 			
 			const nbCores = this.state.neverFrequencyData.info.cores;
@@ -392,7 +472,7 @@ class SystemMonitor extends Component
 					
 					
 					for (let j = 0; j < highFrequencyData.length; j++) {
-						cpuFrequencyData.datasets[i].data[j] = highFrequencyData[j].cpu.speed.cores[i];
+						cpuFrequencyData.datasets[i].data[j] = highFrequencyData[j].cpu.frequency.cores[i];
 					}
 					
 				}
@@ -410,8 +490,46 @@ class SystemMonitor extends Component
 				for (let i = 0; i < highFrequencyData.length; i++) {
 					
 					let sum = 0;
-					highFrequencyData[i].cpu.speed.cores.forEach(speed => sum += speed);
-					cpuFrequencyData.datasets[0].data[i] = sum / highFrequencyData[i].cpu.speed.cores.length
+					highFrequencyData[i].cpu.frequency.cores.forEach(speed => sum += speed);
+					cpuFrequencyData.datasets[0].data[i] = sum / highFrequencyData[i].cpu.frequency.cores.length
+				}
+				
+			}
+			
+			
+			if (DETAIL_CPU_LOAD) {
+				for (let i = 0; i < nbCores; i++) {
+					
+					cpuLoadData.datasets[i] = {
+						label: `proc : ${i}`,
+						borderColor: this.COLORS.cpu[i],
+						data: [],
+						backgroundColor: "#00000000"
+					};
+					
+					
+					for (let j = 0; j < highFrequencyData.length; j++) {
+						console.debug(cpuLoadData.datasets[i], highFrequencyData[j].cpu.load)
+						cpuLoadData.datasets[i].data[j] = highFrequencyData[j].cpu.load.cpus[i];
+					}
+					
+				}
+			} else {
+				
+				
+				cpuLoadData.datasets[0] = {
+					label: "average",
+					borderColor: "#ffffff",
+					data: [],
+					
+				};
+				
+				
+				for (let i = 0; i < highFrequencyData.length; i++) {
+					
+					let sum = 0;
+					highFrequencyData[i].cpu.load.cores.forEach(speed => sum += speed);
+					cpuLoadData.datasets[0].data[i] = sum / highFrequencyData[i].cpu.load.cores.length
 				}
 				
 			}
@@ -421,8 +539,8 @@ class SystemMonitor extends Component
 		
 		// for (let i = 0; i < highFrequencyData.length; i++) {
 		//
-		// 	const {speed, temp} = highFrequencyData[i].cpu;
-		// 	const speedCores = speed.cores;
+		// 	const {frequency, temp} = highFrequencyData[i].cpu;
+		// 	const speedCores = frequency.cores;
 		//
 		// 	const nbCores = speedCores.length;
 		// 	for (let j = 0; j < nbCores; j++) {
@@ -441,12 +559,12 @@ class SystemMonitor extends Component
 				yAxes: [{
 					ticks: {
 						min: 0,
-						max:  5,
+						max: 5,
 						stepSize: 0.5
 					}
 				}]
 			}
-	
+			
 			
 		};
 		return (
