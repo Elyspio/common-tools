@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {Line} from 'react-chartjs-2'
-import {object, string, number} from 'prop-types'
+import {DataArray} from "./DataArray";
+import {DataChart, DataType} from "./DataChart";
+
 let si = require("systeminformation");
 
 si = window.require("systeminformation");
@@ -15,100 +16,6 @@ function mapDispatchToProps(dispatch)
 {
 	return {};
 }
-
-
-class DataArray {
-	
-	data;
-	limit;
-	
-	constructor(limit) {
-		this.limit = limit;
-		this.data = [];
-	}
-	
-	push(data) {
-		
-		if (this.data.length >= this.limit) {
-			this.data.shift();
-		}
-		this.data.push({
-			...data,
-			time: Date.now()
-		});
-		
-		return this
-		
-	}
-	
-	getData = () => this.data;
-	
-	clearData = () => this.data.clear();
-	
-}
-
-
-const DataType = {
-	cpu: {
-		load: "CPU_LOAD",
-		frequency: "CPU_FREQUENCY",
-		temp: "CPU_TEMP"
-	},
-	
-	mem: "MEMORY",
-	disk: "DISK"
-	
-}
-
-class DataChart extends Component {
-	
-	
-	static options = {
-		animation: false,
-		scales: {
-			yAxes: [{
-				ticks: {
-					min: 0,
-					max: 5,
-					stepSize: 0.5
-				}
-			}]
-		}
-		
-		
-	};
-	// todo render(type)
-	static propTypes = {
-		type: DataType,
-		data : object,
-		label : string,
-		nbChart : number
-		
-	};
-	
-	constructor(props, context) {
-		super(props, context);
-		
-	}
-	
-	
-	render() {
-		
-		const charts = [];
-		
-		
-		return (
-			<div className={"dataChart"}>
-				{charts}
-			</div>
-		);
-	}
-}
-
-export {
-	DataChart,
-	DataType
-};
 
 
 class SystemMonitor extends Component
@@ -552,24 +459,14 @@ class SystemMonitor extends Component
 		// 	console.log(i);
 		// }
 		
+		const cpuLoad = <DataChart type={DataType.cpu.load} data={highFrequencyData} label={"Frequency"}/>;
 		
-		const options = {
-			animation: false,
-			scales: {
-				yAxes: [{
-					ticks: {
-						min: 0,
-						max: 5,
-						stepSize: 0.5
-					}
-				}]
-			}
-			
-			
-		};
+		
 		return (
 			<div id={"SystemMonitor"}>
-				<Line data={cpuFrequencyData} options={options} ref={(ref) => this.chartRef = ref}/>
+				{/*<Line data={cpuFrequencyData} options={options} ref={(ref) => this.chartRef = ref}/>*/}
+				{cpuLoad}
+			
 			</div>
 		);
 	}
