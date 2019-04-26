@@ -25,9 +25,9 @@ class SystemMonitor extends Component
 		VERY_LOW: 4,
 		LOW: 2,
 		MEDIUM: 1,
-		HIGH: 0.5,
-		HIGHEST: 0.25,
-		MAX: 0.2
+		HIGH: 0.75,
+		HIGHEST: 0.5,
+		MAX: 0.25
 	};
 	static PRINT_TIME = false;
 	static LOW_REFRESH_RATE = 1e4;
@@ -36,6 +36,8 @@ class SystemMonitor extends Component
 	currentSpeedModifier = SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH;
 	
 	chartRef = null;
+	
+	intervalIds = [];
 	
 	COLORS = {
 		cpu: []
@@ -53,8 +55,8 @@ class SystemMonitor extends Component
 		const self = this;
 		this.state = {
 			
-			highFrequencyArray: new DataArray(100),
-			lowFrequencyArray: new DataArray(10),
+			highFrequencyArray: new DataArray(20),
+			lowFrequencyArray: new DataArray(20),
 			neverFrequencyData: {}
 			
 		};
@@ -129,11 +131,11 @@ class SystemMonitor extends Component
 	}
 	
 	componentWillUnmount() {
-		clearInterval();
+		this.intervalIds.forEach(id => clearInterval(id));
 	}
 	
 	initRefresh() {
-		setInterval(() => {
+		this.intervalIds.push(setInterval(() => {
 			this.getDynamicData(SystemMonitor.LOW_REFRESH_RATE).then(data => {
 				const {gpu, battery, network} = data;
 				this.setState(prev => {
@@ -153,10 +155,10 @@ class SystemMonitor extends Component
 					console.log("Low refresh : ", this.state);
 				})
 			})
-		}, (SystemMonitor.LOW_REFRESH_RATE * this.currentSpeedModifier) | 0);
+		}, (SystemMonitor.LOW_REFRESH_RATE * this.currentSpeedModifier) | 0));
 		
 		
-		setInterval(() => {
+		this.intervalIds.push(setInterval(() => {
 			this.getDynamicData(SystemMonitor.HIGH_REFRESH_RATE).then(data => {
 				const {cpuFrequency, cpuTemp, memory, network, disk, cpuLoad} = data;
 				this.setState(prev => {
@@ -182,7 +184,7 @@ class SystemMonitor extends Component
 				})
 			})
 			
-		}, (SystemMonitor.HIGH_REFRESH_RATE * this.currentSpeedModifier) | 0)
+		}, (SystemMonitor.HIGH_REFRESH_RATE * this.currentSpeedModifier) | 0))
 	}
 	
 	async getDynamicData(frequency, obj) {
@@ -358,117 +360,32 @@ class SystemMonitor extends Component
 			
 		}
 		
-		
-		const DETAIL_CPU_FREQUENCY = false;
-		const DETAIL_CPU_LOAD = true;
-		if (highFrequencyData.length > 0) {
-			
-			const nbCores = this.state.neverFrequencyData.info.cores;
+		if(highFrequencyData.length > 0) {
+			const cpuLoad = <DataChart type={DataType.cpu.load} data={highFrequencyData} label={"Frequency"} colors={this.COLORS.cpu}/>;
 			
 			
-			if (DETAIL_CPU_FREQUENCY) {
+			return (
+				<div id={"SystemMonitor"}>
+					
+					<div id="cpuCharts">
+						<div id="cpuLoad" className={"small"}>
+							{cpuLoad}
+						
+						</div>
+					</div>
 				
-				for (let i = 0; i < nbCores; i++) {
-					
-					cpuFrequencyData.datasets[i] = {
-						label: `proc : ${i}`,
-						borderColor: this.COLORS.cpu[i],
-						data: [],
-						backgroundColor: "#00000000"
-					};
-					
-					
-					for (let j = 0; j < highFrequencyData.length; j++) {
-						cpuFrequencyData.datasets[i].data[j] = highFrequencyData[j].cpu.frequency.cores[i];
-					}
-					
-				}
-			} else {
-				
-				
-				cpuFrequencyData.datasets[0] = {
-					label: "average",
-					borderColor: "#ffffff",
-					data: [],
-					
-				};
-				
-				
-				for (let i = 0; i < highFrequencyData.length; i++) {
-					
-					let sum = 0;
-					highFrequencyData[i].cpu.frequency.cores.forEach(speed => sum += speed);
-					cpuFrequencyData.datasets[0].data[i] = sum / highFrequencyData[i].cpu.frequency.cores.length
-				}
-				
-			}
-			
-			
-			if (DETAIL_CPU_LOAD) {
-				for (let i = 0; i < nbCores; i++) {
-					
-					cpuLoadData.datasets[i] = {
-						label: `proc : ${i}`,
-						borderColor: this.COLORS.cpu[i],
-						data: [],
-						backgroundColor: "#00000000"
-					};
-					
-					
-					for (let j = 0; j < highFrequencyData.length; j++) {
-						console.debug(cpuLoadData.datasets[i], highFrequencyData[j].cpu.load)
-						cpuLoadData.datasets[i].data[j] = highFrequencyData[j].cpu.load.cpus[i];
-					}
-					
-				}
-			} else {
-				
-				
-				cpuLoadData.datasets[0] = {
-					label: "average",
-					borderColor: "#ffffff",
-					data: [],
-					
-				};
-				
-				
-				for (let i = 0; i < highFrequencyData.length; i++) {
-					
-					let sum = 0;
-					highFrequencyData[i].cpu.load.cores.forEach(speed => sum += speed);
-					cpuLoadData.datasets[0].data[i] = sum / highFrequencyData[i].cpu.load.cores.length
-				}
-				
-			}
-			
+				</div>
+			);
+		}
+		else {
+			return (
+				<div id={"SystemMonitor"}>
+					Wait please
+				</div>
+			)
 		}
 		
-		
-		// for (let i = 0; i < highFrequencyData.length; i++) {
-		//
-		// 	const {frequency, temp} = highFrequencyData[i].cpu;
-		// 	const speedCores = frequency.cores;
-		//
-		// 	const nbCores = speedCores.length;
-		// 	for (let j = 0; j < nbCores; j++) {
-		// 		cpuFrequencyData.datasets[j] = {};
-		// 		cpuFrequencyData.datasets[j].label = `processor ${i}`;
-		//
-		// 	}
-		//
-		// 	console.log(i);
-		// }
-		
-		const cpuLoad = <DataChart type={DataType.cpu.load} data={highFrequencyData} label={"Frequency"}/>;
-		
-		
-		return (
-			<div id={"SystemMonitor"}>
-				{/*<Line data={cpuFrequencyData} options={options} ref={(ref) => this.chartRef = ref}/>*/}
-				{cpuLoad}
-			
-			</div>
-		);
+
 	}
 }
 

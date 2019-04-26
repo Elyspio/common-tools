@@ -1,0 +1,25 @@
+div.cpuLoadChart, div.cpuLoadChart canvas {
+	height: 11vh !important;
+	width: 18vw !important;
+	display: inline;
+}
+
+
+div#cpuLoad.small div.cpuLoadChart, div#cpuLoad.small div.cpuLoadChart canvas {
+	height: 8rem !important;
+	width: 32vw !important;
+}
+
+div#cpuLoad {
+	display: grid;
+	grid-template: 1fr / repeat(4, 1fr);
+	grid-auto-flow: row;
+}
+
+
+
+div#cpuLoad.small {
+	display: grid;
+	grid-template: 1fr / repeat(2, 1fr);
+	grid-auto-flow: row;
+}
