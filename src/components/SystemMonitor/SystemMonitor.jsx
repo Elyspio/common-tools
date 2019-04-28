@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {DataArray} from "./DataArray";
 import {DataChart, DataType} from "./DataChart";
+import {Dropdown} from "primereact/dropdown";
 
 let si = require("systeminformation");
 
@@ -30,12 +31,11 @@ class SystemMonitor extends Component
 		MAX: 0.25
 	};
 	static PRINT_TIME = false;
-	static LOW_REFRESH_RATE = 1e4;
-	static HIGH_REFRESH_RATE = 1e3;
+	static LOW_REFRESH_RATE = 10e3 * 1e0;
+	static HIGH_REFRESH_RATE = 1e3 * 1e0;
 	static NEVER_REFRESH_RATE = Infinity;
-	currentSpeedModifier = SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH;
 	
-	chartRef = null;
+	static nbRefresh = 0;
 	
 	intervalIds = [];
 	
@@ -55,11 +55,15 @@ class SystemMonitor extends Component
 		const self = this;
 		this.state = {
 			
+			
 			highFrequencyArray: new DataArray(20),
 			lowFrequencyArray: new DataArray(20),
-			neverFrequencyData: {}
+			neverFrequencyData: {},
+			
+			dimensions: {}
 			
 		};
+		
 		
 		this.getDynamicData(SystemMonitor.NEVER_REFRESH_RATE).then(neverRefreshData => {
 			this.getDynamicData(SystemMonitor.LOW_REFRESH_RATE).then(lowRefreshData => {
@@ -90,9 +94,6 @@ class SystemMonitor extends Component
 						system: neverRefreshData.system
 					};
 					
-					
-					console.debug(neverFrequencyData);
-					
 					this.setState(prev => {
 						return {
 							lowFrequencyArray: prev.lowFrequencyArray.push(lowFrequencyData),
@@ -107,9 +108,9 @@ class SystemMonitor extends Component
 						for (let i = 0; i < this.state.neverFrequencyData.info.cores; i++) {
 							this.COLORS.cpu[i] = SystemMonitor.getRandomColor();
 						}
+						this.updateRefreshSpeed(SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH);
 						
 						
-						self.initRefresh();
 					});
 				});
 			});
@@ -121,70 +122,114 @@ class SystemMonitor extends Component
 		const letters = '0123456789ABCDEF';
 		let color = '#';
 		for (let i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 16)];
+			color += letters[Math.floor(Math.random() * 12) + 4];
 		}
 		return color;
 	}
 	
-	componentDidMount() {
-		console.log(this.chartRef);
+	updateRefreshSpeed(speedModifier) {
+		
+		this.setState(prev => {
+			return {
+				...prev,
+				currentSpeedModifier: speedModifier,
+				lowRefreshSpeed: Math.floor(SystemMonitor.LOW_REFRESH_RATE * speedModifier),
+				highRefreshSpeed: Math.floor(SystemMonitor.HIGH_REFRESH_RATE * speedModifier),
+			}
+		}, () => {
+			this.intervalIds.forEach(id => clearTimeout(id));
+			this.initRefresh();
+		});
 	}
 	
+	componentDidMount() {
+		
+		const comp = document.querySelector("div#SystemMonitor");
+		window.addEventListener("resize", () => {
+			this.setState({
+				dimensions: {
+					width: comp.clientWidth,
+					height: comp.clientHeight,
+				},
+			});
+		});
+		
+		
+	}
+	
+	
 	componentWillUnmount() {
-		this.intervalIds.forEach(id => clearInterval(id));
+		this.intervalIds.forEach(id => clearTimeout(id));
 	}
 	
 	initRefresh() {
-		this.intervalIds.push(setInterval(() => {
-			this.getDynamicData(SystemMonitor.LOW_REFRESH_RATE).then(data => {
-				const {gpu, battery, network} = data;
-				this.setState(prev => {
-					console.debug(prev.lowFrequencyArray);
-					const lowFrequencyData = prev.lowFrequencyArray.push({
-						gpu: gpu,
-						battery: battery,
-						network: network
-					});
-					
-					
-					return {
-						...prev,
-						lowFrequencyArray: lowFrequencyData
-					}
-				}, () => {
-					console.log("Low refresh : ", this.state);
-				})
-			})
-		}, (SystemMonitor.LOW_REFRESH_RATE * this.currentSpeedModifier) | 0));
 		
+		const self = this;
 		
-		this.intervalIds.push(setInterval(() => {
-			this.getDynamicData(SystemMonitor.HIGH_REFRESH_RATE).then(data => {
-				const {cpuFrequency, cpuTemp, memory, network, disk, cpuLoad} = data;
-				this.setState(prev => {
-					
-					const highFrequencyArray = prev.highFrequencyArray.push({
-						cpu: {
-							...prev.cpu,
-							frequency: cpuFrequency,
-							load: cpuLoad,
-							temp: cpuTemp
-						},
-						disk: disk,
-						network: network,
-						memory: memory
-					});
-					
-					return {
-						...prev,
-						highFrequencyArray: highFrequencyArray,
-					}
-				}, () => {
-					console.log("High refresh : ", this.state);
-				})
+		this.queryLowRefreshedData(self);
+		
+		this.queryHighRefreshedData(self);
+		
+	}
+	
+	queryHighRefreshedData(self) {
+		self.getDynamicData(SystemMonitor.HIGH_REFRESH_RATE).then(data => {
+			const {cpuFrequency, cpuTemp, memory, network, disk, cpuLoad} = data;
+			return this.setState(prev => {
+				
+				const highFrequencyArray = prev.highFrequencyArray.push({
+					cpu: {
+						...prev.cpu,
+						frequency: cpuFrequency,
+						load: cpuLoad,
+						temp: cpuTemp
+					},
+					disk: disk,
+					network: network,
+					memory: memory
+				});
+				
+				return {
+					...prev,
+					highFrequencyArray: highFrequencyArray,
+				}
+			}, () => {
+				console.log("High refresh : ", this.state);
 			})
+		})
+			.finally(() => {
+				SystemMonitor.nbRefresh += 1;
+				self.intervalIds.push(setTimeout(() => self.queryHighRefreshedData(self), self.state.highRefreshSpeed))
+				console.log("nbRefresh : ", SystemMonitor.nbRefresh);
+			})
+	}
+	
+	queryLowRefreshedData(self) {
+		self.getDynamicData(SystemMonitor.LOW_REFRESH_RATE).then(data => {
+			const {gpu, battery, network} = data;
+			return this.setState(prev => {
+				console.debug(prev.lowFrequencyArray);
+				const lowFrequencyData = prev.lowFrequencyArray.push({
+					gpu: gpu,
+					battery: battery,
+					network: network
+				});
+				
+				
+				return {
+					...prev,
+					lowFrequencyArray: lowFrequencyData
+				}
+			}, () => {
+				console.log("Low refresh : ", this.state);
+			})
+		}).finally(() => {
+			console.log("HERE", self.state.lowRefreshSpeed);
+			self.intervalIds.push(setTimeout(() => self.queryLowRefreshedData(self), self.state.lowRefreshSpeed))
+			SystemMonitor.nbRefresh += 1;
+			console.log("nbRefresh : ", SystemMonitor.nbRefresh);
 			
-		}, (SystemMonitor.HIGH_REFRESH_RATE * this.currentSpeedModifier) | 0))
+		})
 	}
 	
 	async getDynamicData(frequency, obj) {
@@ -326,7 +371,6 @@ class SystemMonitor extends Component
 	
 	render() {
 		
-		console.log(this.COLORS);
 		
 		const cpuFrequencyData = {
 			labels: [],
@@ -342,11 +386,10 @@ class SystemMonitor extends Component
 				label: "",
 				data: [],
 			}]
-		}
+		};
 		
 		
 		const highFrequencyData = this.state.highFrequencyArray.getData();
-		console.log(highFrequencyData);
 		
 		
 		// High Frequency Labels
@@ -360,24 +403,38 @@ class SystemMonitor extends Component
 			
 		}
 		
-		if(highFrequencyData.length > 0) {
-			const cpuLoad = <DataChart type={DataType.cpu.load} data={highFrequencyData} label={"Frequency"} colors={this.COLORS.cpu}/>;
+		console.log("State render : " , this.state);
+		
+		if (highFrequencyData.length > 0) {
+			const cpuLoad = <DataChart type={DataType.cpu.load} data={highFrequencyData} label={"Frequency"}
+			                           colors={this.COLORS.cpu}/>;
 			
+			
+			let smallClassName = (this.state.dimensions.width < 800) ? "small" : "";
+			
+			const options = [
+				{label: "Lower", value: SystemMonitor.REFRESH_SPEED_MODIFIER.VERY_LOW},
+				{label: "Low", value: SystemMonitor.REFRESH_SPEED_MODIFIER.LOW},
+				{label: "Medium", value: SystemMonitor.REFRESH_SPEED_MODIFIER.MEDIUM},
+				{label: "High", value: SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH},
+				{label: "Highest", value: SystemMonitor.REFRESH_SPEED_MODIFIER.HIGHEST},
+				{label: "Max", value: SystemMonitor.REFRESH_SPEED_MODIFIER.MAX}
+			];
 			
 			return (
 				<div id={"SystemMonitor"}>
+					<Dropdown value={this.state.currentSpeedModifier} options={options}
+					          onChange={e => this.updateRefreshSpeed(e.value)}/>
 					
 					<div id="cpuCharts">
-						<div id="cpuLoad" className={"small"}>
+						<div id="cpuLoad" className={smallClassName}>
 							{cpuLoad}
-						
 						</div>
 					</div>
 				
 				</div>
 			);
-		}
-		else {
+		} else {
 			return (
 				<div id={"SystemMonitor"}>
 					Wait please
@@ -385,7 +442,7 @@ class SystemMonitor extends Component
 			)
 		}
 		
-
+		
 	}
 }
 
