@@ -62,10 +62,6 @@ class DataChart extends Component {
 		
 	}
 	
-	componentDidMount() {
-		console.log(this.chartRef);
-	}
-	
 	render() {
 		
 		const charts = [];
@@ -73,11 +69,9 @@ class DataChart extends Component {
 		
 		switch (this.props.type) {
 			case DataType.cpu.load:
-				console.log(this.props.data[0].cpu.load);
 				
 				const cpus = this.props.data[0].cpu.load.cpus;
 				const nbCores = cpus.length;
-				console.log("nbCores", nbCores);
 				
 				let currentData;
 				

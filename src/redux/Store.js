@@ -1,5 +1,5 @@
 import {applyMiddleware, combineReducers, createStore} from 'redux';
-import {componentReducer, fuelReducer} from './Reducer';
+import {componentReducer, fuelReducer, systemMonitorReducer} from './Reducer';
 import {createLogger} from 'redux-logger';
 import {Action} from "./Action";
 
@@ -11,7 +11,7 @@ const getStore = () => {
   });
 
 
-  return createStore(combineReducers({component: componentReducer, fuelSetting : fuelReducer}), {}, applyMiddleware(logger));
+  return createStore(combineReducers({component: componentReducer, fuelSetting : fuelReducer, systemMonitor :systemMonitorReducer }), {}, applyMiddleware(logger));
 
 };
 

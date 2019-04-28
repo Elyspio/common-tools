@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import {DataArray} from "./DataArray";
 import {DataChart, DataType} from "./DataChart";
 import {Dropdown} from "primereact/dropdown";
+import CpuChart from "./CpuChart";
+import {Action} from "../../redux/Action";
 
 let si = require("systeminformation");
 
@@ -10,7 +12,9 @@ si = window.require("systeminformation");
 
 function mapStateToProps(state) {
 	
-	return {};
+	return {
+		systemMonitor : state.systemMonitor
+	};
 }
 
 function mapDispatchToProps(dispatch)
@@ -22,14 +26,7 @@ function mapDispatchToProps(dispatch)
 class SystemMonitor extends Component
 {
 	
-	static REFRESH_SPEED_MODIFIER = {
-		VERY_LOW: 4,
-		LOW: 2,
-		MEDIUM: 1,
-		HIGH: 0.75,
-		HIGHEST: 0.5,
-		MAX: 0.25
-	};
+
 	static PRINT_TIME = false;
 	static LOW_REFRESH_RATE = 10e3 * 1e0;
 	static HIGH_REFRESH_RATE = 1e3 * 1e0;
@@ -38,6 +35,7 @@ class SystemMonitor extends Component
 	static nbRefresh = 0;
 	
 	intervalIds = [];
+	
 	
 	COLORS = {
 		cpu: []
@@ -68,7 +66,7 @@ class SystemMonitor extends Component
 		this.getDynamicData(SystemMonitor.NEVER_REFRESH_RATE).then(neverRefreshData => {
 			this.getDynamicData(SystemMonitor.LOW_REFRESH_RATE).then(lowRefreshData => {
 				
-				console.log(lowRefreshData);
+				//console.log(lowRefreshData);
 				
 				this.getDynamicData(SystemMonitor.HIGH_REFRESH_RATE, lowRefreshData.network).then(highRefreshData => {
 					
@@ -98,17 +96,18 @@ class SystemMonitor extends Component
 						return {
 							lowFrequencyArray: prev.lowFrequencyArray.push(lowFrequencyData),
 							highFrequencyArray: prev.highFrequencyArray.push(highFrequencyData),
-							neverFrequencyData: neverFrequencyData
+							neverFrequencyData: neverFrequencyData,
+							currentSpeedModifier : this.props.systemMonitor.speedModifier
 						}
 						
 						
 					}, () => {
-						console.log("Constructor State : ", this.state);
+						//console.log("Constructor State : ", this.state);
 						
 						for (let i = 0; i < this.state.neverFrequencyData.info.cores; i++) {
 							this.COLORS.cpu[i] = SystemMonitor.getRandomColor();
 						}
-						this.updateRefreshSpeed(SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH);
+						this.updateRefreshSpeed(this.state.currentSpeedModifier);
 						
 						
 					});
@@ -118,16 +117,18 @@ class SystemMonitor extends Component
 		
 	}
 	
-	static getRandomColor() {
+	static getRandomColor(min) {
 		const letters = '0123456789ABCDEF';
 		let color = '#';
 		for (let i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 12) + 4];
+			color += letters[Math.floor(Math.random() * (16 - min)) + min];
 		}
 		return color;
 	}
 	
 	updateRefreshSpeed(speedModifier) {
+		
+		console.debug("Change SpeedModifier", speedModifier);
 		
 		this.setState(prev => {
 			return {
@@ -142,6 +143,22 @@ class SystemMonitor extends Component
 		});
 	}
 	
+	// new componentWillRecieveProps
+	static getDerivedStateFromProps(props, state) {
+		if(state.currentSpeedModifier !== props.systemMonitor.speedModifier)
+		{
+			
+			console.log("Nouveau props", props.systemMonitor);
+			
+			return {
+				...state,
+				currentSpeedModifier : props.systemMonitor.speedModifier
+			}
+		}
+		return null;
+	}
+	
+	
 	componentDidMount() {
 		
 		const comp = document.querySelector("div#SystemMonitor");
@@ -152,6 +169,10 @@ class SystemMonitor extends Component
 					height: comp.clientHeight,
 				},
 			});
+		});
+		
+		comp.addEventListener("click", evt => {
+			console.log(evt);
 		});
 		
 		
@@ -194,13 +215,13 @@ class SystemMonitor extends Component
 					highFrequencyArray: highFrequencyArray,
 				}
 			}, () => {
-				console.log("High refresh : ", this.state);
+				//console.log("High refresh : ", this.state);
 			})
 		})
 			.finally(() => {
 				SystemMonitor.nbRefresh += 1;
 				self.intervalIds.push(setTimeout(() => self.queryHighRefreshedData(self), self.state.highRefreshSpeed))
-				console.log("nbRefresh : ", SystemMonitor.nbRefresh);
+				//console.log("nbRefresh : ", SystemMonitor.nbRefresh);
 			})
 	}
 	
@@ -208,7 +229,7 @@ class SystemMonitor extends Component
 		self.getDynamicData(SystemMonitor.LOW_REFRESH_RATE).then(data => {
 			const {gpu, battery, network} = data;
 			return this.setState(prev => {
-				console.debug(prev.lowFrequencyArray);
+				//console.debug(prev.lowFrequencyArray);
 				const lowFrequencyData = prev.lowFrequencyArray.push({
 					gpu: gpu,
 					battery: battery,
@@ -221,13 +242,13 @@ class SystemMonitor extends Component
 					lowFrequencyArray: lowFrequencyData
 				}
 			}, () => {
-				console.log("Low refresh : ", this.state);
+				//console.log("Low refresh : ", this.state);
 			})
 		}).finally(() => {
-			console.log("HERE", self.state.lowRefreshSpeed);
+			//console.log("HERE", self.state.lowRefreshSpeed);
 			self.intervalIds.push(setTimeout(() => self.queryLowRefreshedData(self), self.state.lowRefreshSpeed))
 			SystemMonitor.nbRefresh += 1;
-			console.log("nbRefresh : ", SystemMonitor.nbRefresh);
+			//console.log("nbRefresh : ", SystemMonitor.nbRefresh);
 			
 		})
 	}
@@ -243,30 +264,30 @@ class SystemMonitor extends Component
 			
 			if (SystemMonitor.PRINT_TIME) {
 				
-				console.time("SystemMonitor.HIGH_REFRESH_RATE");
+				//console.time("SystemMonitor.HIGH_REFRESH_RATE");
 				
-				console.time("cpuFrequency");
+				//console.time("cpuFrequency");
 				let cpuLoad = await si.currentLoad();
-				console.timeEnd("cpuFrequency");
+				//console.timeEnd("cpuFrequency");
 				
 				
-				console.time("cpuFrequency");
+				//console.time("cpuFrequency");
 				let cpuFrequency = await si.cpuCurrentspeed();
-				console.timeEnd("cpuFrequency");
+				//console.timeEnd("cpuFrequency");
 				
-				console.time("cpuTemp");
+				//console.time("cpuTemp");
 				let cpuTemp = await si.cpuTemperature();
-				console.timeEnd("cpuTemp");
+				//console.timeEnd("cpuTemp");
 				
-				console.time("memory");
+				//console.time("memory");
 				let memory = await si.mem();
-				console.timeEnd("memory");
+				//console.timeEnd("memory");
 				
-				console.time("disk");
+				//console.time("disk");
 				let disk = await si.fsSize();
-				console.timeEnd("disk");
+				//console.timeEnd("disk");
 				
-				console.time("network");
+				//console.time("network");
 				let network = obj;
 				for (let i = 0; i < obj.length; i++) {
 					si.networkStats(obj[i]['iface']).then(stats => {
@@ -274,8 +295,8 @@ class SystemMonitor extends Component
 						obj[i]['stats'] = stats['0'];
 					});
 				}
-				console.timeEnd("network");
-				console.timeEnd("SystemMonitor.HIGH_REFRESH_RATE");
+				//console.timeEnd("network");
+				//console.timeEnd("SystemMonitor.HIGH_REFRESH_RATE");
 				
 				return {
 					cpuFrequency: cpuFrequency,
@@ -313,17 +334,17 @@ class SystemMonitor extends Component
 			
 			if (SystemMonitor.PRINT_TIME) {
 				
-				console.time("battery");
+				//console.time("battery");
 				let battery = await si.battery();
-				console.timeEnd("battery");
+				//console.timeEnd("battery");
 				
-				console.time("gpu");
+				//console.time("gpu");
 				let gpu = await si.graphics();
-				console.timeEnd("gpu");
+				//console.timeEnd("gpu");
 				
-				console.time("network");
+				//console.time("network");
 				let network = await si.networkInterfaces();
-				console.timeEnd("network");
+				//console.timeEnd("network");
 				
 				return {
 					battery: battery,
@@ -347,13 +368,13 @@ class SystemMonitor extends Component
 			
 			if (SystemMonitor.PRINT_TIME) {
 				
-				console.time("cpuInfo");
+				//console.time("cpuInfo");
 				let cpuInfo = await si.cpu();
-				console.timeEnd("cpuInfo");
+				//console.timeEnd("cpuInfo");
 				
-				console.time("system");
+				//console.time("system");
 				let system = await si.system();
-				console.timeEnd("system");
+				//console.timeEnd("system");
 				
 				return {
 					cpuInfo: cpuInfo,
@@ -403,34 +424,27 @@ class SystemMonitor extends Component
 			
 		}
 		
-		console.log("State render : " , this.state);
+		//console.log("State render : " , this.state);
 		
 		if (highFrequencyData.length > 0) {
-			const cpuLoad = <DataChart type={DataType.cpu.load} data={highFrequencyData} label={"Frequency"}
-			                           colors={this.COLORS.cpu}/>;
 			
-			
-			let smallClassName = (this.state.dimensions.width < 800) ? "small" : "";
+			let isSmallScreen = (this.state.dimensions.width < 800);
 			
 			const options = [
-				{label: "Lower", value: SystemMonitor.REFRESH_SPEED_MODIFIER.VERY_LOW},
-				{label: "Low", value: SystemMonitor.REFRESH_SPEED_MODIFIER.LOW},
-				{label: "Medium", value: SystemMonitor.REFRESH_SPEED_MODIFIER.MEDIUM},
-				{label: "High", value: SystemMonitor.REFRESH_SPEED_MODIFIER.HIGH},
-				{label: "Highest", value: SystemMonitor.REFRESH_SPEED_MODIFIER.HIGHEST},
-				{label: "Max", value: SystemMonitor.REFRESH_SPEED_MODIFIER.MAX}
+				{label: "Lower", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.LOWER},
+				{label: "Low", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.LOW},
+				{label: "Normal", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.NORMAL},
+				{label: "High", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.HIGH},
+				{label: "Highest", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.HIGHEST},
+				{label: "Max", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.MAX}
 			];
 			
 			return (
-				<div id={"SystemMonitor"}>
+				<div id={"SystemMonitor"} >
 					<Dropdown value={this.state.currentSpeedModifier} options={options}
 					          onChange={e => this.updateRefreshSpeed(e.value)}/>
 					
-					<div id="cpuCharts">
-						<div id="cpuLoad" className={smallClassName}>
-							{cpuLoad}
-						</div>
-					</div>
+					<CpuChart data={highFrequencyData} small={isSmallScreen}/>
 				
 				</div>
 			);
