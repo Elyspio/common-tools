@@ -26,7 +26,7 @@ class FuelButton extends React.Component {
 	};
 	
 	
-	componentWillReceiveProps = (nextProps, nextContext) => {
+	componentWillReceiveProps = (nextProps) => {
 		
 		if (nextProps.fuelSetting !== this.props.fuelSetting)
 			this.update(nextProps);

@@ -30,7 +30,7 @@ export class ModelApp {
 	};
 	
 	
-	getPid = () => this.pids;
+	
 	getName = () => this.name;
 	
 	

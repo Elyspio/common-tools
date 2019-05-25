@@ -24,6 +24,6 @@ export class DataArray {
 	
 	getData = () => this.data;
 	
-	clearData = () => this.data.clear();
+	
 	
 }

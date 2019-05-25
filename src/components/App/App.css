@@ -22,7 +22,7 @@ div#currentComponent {
 	/*background: #161616;*/
 	margin: 2rem;
 	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-	max-height: 90vh;
+	/*max-height: 90vh;*/
 	overflow: auto;
 }
 
@@ -44,8 +44,8 @@ div#menu {
 }
 
 body, html, div#root, div#App {
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	margin: 0;
 	padding: 0;
 }
