@@ -3,7 +3,7 @@ import {FuelFinder} from "../components/FuelFinder";
 
 const DEFAULT_STATE = {
 	COMPONENT: {
-		current: Action.CHANGE_COMPONENT.NONE
+		current: Action.changeComponent.payload.NONE
 	},
 	FUEL: {
 		fuel: FuelFinder.settings.fuels.gazole,
@@ -13,7 +13,7 @@ const DEFAULT_STATE = {
 		cp: "69300"
 	},
 	SYSTEM_MONITOR: {
-		speedModifier: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.NORMAL,
+		speedModifier: Action.systemMonitor.changeSpeed.payload.normal,
 	}
 	
 };
@@ -21,7 +21,7 @@ const DEFAULT_STATE = {
 
 const systemMonitorReducer = (state = DEFAULT_STATE.SYSTEM_MONITOR, action) => {
 	
-	const {HIGH, HIGHEST, LOW, LOWER, MAX, MIN, NORMAL} = Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD;
+	const {HIGH, HIGHEST, LOW, LOWER, MAX, MIN, NORMAL} = Action.systemMonitor.changeSpeed.payload;
 	
 	if([HIGH, HIGHEST, LOW, LOWER, MAX, MIN, NORMAL].findIndex(x => x === action.payload) >= 0) {
 		state = {
@@ -40,7 +40,7 @@ const systemMonitorReducer = (state = DEFAULT_STATE.SYSTEM_MONITOR, action) => {
 const componentReducer = (state = DEFAULT_STATE.COMPONENT, action) => {
 	
 	switch (action.type) {
-		case Action.CHANGE_COMPONENT.TYPE:
+		case Action.changeComponent.type:
 			state = {
 				...state,
 				current: action.payload
@@ -56,31 +56,31 @@ const componentReducer = (state = DEFAULT_STATE.COMPONENT, action) => {
 };
 
 const fuelReducer = (state = DEFAULT_STATE.FUEL, action) => {
-	console.log(action.type, Action.FUEL_FINDER.CHANGE_SORTER.TYPE, action.payload);
+	console.log(action.type, Action.fuelFinder.changeSorter.type, action.payload);
 	switch (action.type) {
 		
-		case Action.FUEL_FINDER.CHANGE_FUEL.TYPE:
+		case Action.fuelFinder.changeFuel.type:
 			state = {
 				...state,
 				fuel: action.payload
 			};
 			break;
 		
-		case Action.FUEL_FINDER.CHANGE_CP.TYPE :
+		case Action.fuelFinder.changeCp.type :
 			state = {
 				...state,
 				cp: action.payload
 			};
 			break;
 		
-		case Action.FUEL_FINDER.CHANGE_FORMAT.TYPE :
+		case Action.fuelFinder.changeFormat.type :
 			state = {
 				...state,
 				format: action.payload
 			};
 			break;
 		
-		case Action.FUEL_FINDER.REORDER.TYPE :
+		case Action.fuelFinder.reorder.type :
 			state = {
 				...state,
 				order: action.payload
@@ -88,7 +88,7 @@ const fuelReducer = (state = DEFAULT_STATE.FUEL, action) => {
 			break;
 		
 		
-		case Action.FUEL_FINDER.CHANGE_SORTER.TYPE :
+		case  Action.fuelFinder.changeSorter.type :
 			console.log("CHANGE SORTER !!! ");
 			state = {
 				...state,

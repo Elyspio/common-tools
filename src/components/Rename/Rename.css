@@ -1,0 +1,28 @@
+div#files {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+div#files p {
+	user-select: text !important;
+}
+
+#Renamer form div {
+	display: flex;
+	justify-content: flex-start;
+}
+#Renamer form div *{
+	margin-right: 2rem;
+}
+
+#Renamer form div label {
+	min-width: 10vw;
+	font-size: large;
+}
+
+
+#Renamer form div input {
+	width: 20vw;
+	font-size: large;
+}

@@ -6,13 +6,13 @@ import {Category} from "./Category";
 import {ModelApp} from "./ModelApp";
 
 
-const si = window.require("systeminformation");
-const os = window.require("os");
+const si = require("systeminformation");
+const os = require("os");
 
 const isLinux = os.type() === "Linux";
 
 
-const exec = window.require('child_process').exec;
+const exec = require('child_process').exec;
 
 class StopApps extends Component {
 	

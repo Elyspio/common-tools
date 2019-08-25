@@ -21,24 +21,24 @@ class App extends React.Component {
 		
 		let comp;
 		switch (this.props.component.current) {
-			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.RENAME:
+			case Action.changeComponent.payload.fun.rename:
 				comp = <Rename/>;
 				break;
 			
-			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.FUEL_WORKER:
+			case Action.changeComponent.payload.fun.fuelWorker:
 				comp = <FuelFinder/>;
 				break;
 			
-			case Action.CHANGE_COMPONENT.PAYLOAD.DEV.START_SERVERS:
+			case Action.changeComponent.payload.dev.startServers:
 				comp = <StartServers/>;
 				break;
 			
-			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.STOP_APPS:
+			case Action.changeComponent.payload.fun.stopApps:
 				comp = <StopApps/>;
 				break;
 			
 			
-			case Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR:
+			case Action.changeComponent.payload.fun.systemMonitor:
 				comp = <SystemMonitor/>;
 				break;
 			default:

@@ -7,7 +7,7 @@ import {Action} from "../../redux/Action";
 import './SystemMonitor.css'
 
 
-let si;
+let si = require("systeminformation");
 
 si = window.require("systeminformation");
 
@@ -29,8 +29,8 @@ class SystemMonitor extends Component
 	
 
 	static PRINT_TIME = false;
-	static LOW_REFRESH_RATE = 10e3 * 1e0;
-	static HIGH_REFRESH_RATE = 1e3 * 1e0;
+	static LOW_REFRESH_RATE = 10e3;
+	static HIGH_REFRESH_RATE = 1e3;
 	static NEVER_REFRESH_RATE = Infinity;
 	
 	static nbRefresh = 0;
@@ -432,12 +432,12 @@ class SystemMonitor extends Component
 			let isSmallScreen = (this.state.dimensions.width < 800);
 			
 			const options = [
-				{label: "Lower", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.LOWER},
-				{label: "Low", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.LOW},
-				{label: "Normal", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.NORMAL},
-				{label: "High", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.HIGH},
-				{label: "Highest", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.HIGHEST},
-				{label: "Max", value: Action.SYSTEM_MONITOR.CHANGE_SPEED.PAYLOAD.MAX}
+				{label: "Lower", value: Action.systemMonitor.changeSpeed.payload.lower},
+				{label: "Low", value: Action.systemMonitor.changeSpeed.payload.low},
+				{label: "Normal", value: Action.systemMonitor.changeSpeed.payload.normal},
+				{label: "High", value: Action.systemMonitor.changeSpeed.payload.high},
+				{label: "Highest", value: Action.systemMonitor.changeSpeed.payload.highest},
+				{label: "Max", value: Action.systemMonitor.changeSpeed.payload.max}
 			];
 			
 			return (

@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import Storage from "../../storage/Storage";
 
-const fs = window.require("fs");
+let fs = require('fs');
+fs = window.require("fs");
 
-const childProcess = window.require("child_process");
+let childProcess = require("child_process");
+childProcess = window.require("child_process");
 
 
 function mapStateToProps(state) {
@@ -15,7 +18,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-class StartServers extends Component {
+class CommandStarter extends Component {
 	
 	constructor(props) {
 		super(props);
@@ -33,22 +36,39 @@ class StartServers extends Component {
 				...state,
 				path: e.target.files['0'].path
 			}
+			
+			
 		});
 		
 		
 		childProcess.exec("yarn start", {
-			cwd: this.state.props
+			cwd: this.state.path
 		})
 		
 	};
 	
+	async componentDidMount(): void {
+		let storage = new Storage();
+		await storage.store({
+			a: 1,
+			b: 'Hello'
+		}, undefined, true, false);
+		
+		
+		
+		
+	}
+	
 	render() {
-		const files = fs.readdirSync(this.state.path);
+		
+		
+		
 		return (
 			<div>
 				<h1>Start Servers ! </h1>
-				<input type="file" webkitdirectory="directory" onChange={(e) => this.setPath(e)}/>
-				{files.map(x => <p>{x}</p>)}
+				<input type="file" webkitdirectory="directory"
+				       onChange={(e) => this.setPath(e)}/>
+				
 			</div>
 		);
 	}
@@ -57,4 +77,4 @@ class StartServers extends Component {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(StartServers);
+)(CommandStarter);

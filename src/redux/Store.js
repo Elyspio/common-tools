@@ -24,8 +24,8 @@ const store = getStore();
 
 // default component
 store.dispatch({
-	type: Action.CHANGE_COMPONENT.TYPE,
-	payload: Action.CHANGE_COMPONENT.PAYLOAD.FUN.SYSTEM_MONITOR
+	type: Action.changeComponent.type,
+	payload: Action.changeComponent.payload.dev.startServers
 });
 
 export {

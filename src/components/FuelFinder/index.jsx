@@ -20,7 +20,7 @@ function mapDispatchToProps(dispatch) {
 		// 	console.log("baka", fuel);
 		//
 		// 	dispatch({
-		// 		type: Action.FUEL_FINDER.CHANGE_FUEL.TYPE,
+		// 		type: Action.FUEL_FINDER.CHANGE_FUEL.type,
 		// 		payload: fuel
 		// 	})
 		// },
